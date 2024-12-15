@@ -1,4 +1,12 @@
 <?php
+/**
+ * Plugin functions and definitions for Admin.
+ *
+ * For additional information on potential customization options,
+ * read the developers' documentation:
+ *
+ * @package yourpropfirm-checkout
+ */
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
     exit;
@@ -86,7 +94,6 @@ class Yourpropfirm_Checkout_Order_Handler {
     }
 
     /**
-     * Programmatically create a WooCommerce order with cart items.
      *
      * @param array $data User billing data.
      * @return int|\WP_Error Order ID or error.

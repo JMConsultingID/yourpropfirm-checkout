@@ -30,6 +30,15 @@ class Yourpropfirm_Checkout_Shortcodes {
      * Render the custom billing form.
      */
 	public function render_billing_form() {
+		if (WC()->cart->is_empty()) {
+	        // Display a WooCommerce notice
+	        wc_add_notice(__('Your cart is empty. Please add items to your cart before proceeding.', 'yourpropfirm-checkout'), 'error');
+	        
+	        // Redirect to the cart page
+	        wp_safe_redirect(wc_get_cart_url());
+	        exit;
+	    }
+	    
 	    ob_start();
 
 	    // WooCommerce country and state data
@@ -87,9 +96,19 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    <script>
 	        jQuery(document).ready(function ($) {
 	            // Update form's target dynamically
-	            $('#ypf-billing-form').on('submit', function () {
-	                $(this).attr('target', '_blank'); // Open in a new tab
-	            });
+	            $('#ypf-billing-form').on('submit', function (e) {
+		            // Set form target to open in a new tab
+		            $(this).attr('target', '_blank');
+
+		            // Delay for 2 seconds to allow the new tab to open
+		            setTimeout(function () {
+		                // Clear all form fields
+		                $('#ypf-billing-form').find('input, select').val('');
+
+		                // Redirect to the home page in the current tab
+		                window.location.href = "<?php echo esc_url(home_url()); ?>";
+		            }, 2000); // 2-second delay
+		        });
 
 	            // Dynamic state selection
 	            $('#country').on('change', function () {

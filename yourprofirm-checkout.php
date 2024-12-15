@@ -26,7 +26,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Include necessary files
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-billing-form.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-order-handler.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-thank-you-page.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-redirect-handler.php';
 
 // Initialize the plugin
@@ -34,7 +33,6 @@ function yourprofirm_checkout_init() {
     // Initialize each class
     Yourprofirm_Billing_Form::init();
     Yourprofirm_Order_Handler::init();
-    Yourprofirm_Thank_You_Page::init();
     Yourprofirm_Redirect_Handler::init();
 }
 add_action( 'plugins_loaded', 'yourprofirm_checkout_init' );

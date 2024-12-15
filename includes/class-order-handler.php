@@ -108,7 +108,23 @@ class Yourpropfirm_Checkout_Order_Handler {
 			    $order->get_checkout_payment_url()
 			);
 
-            wp_redirect($order_pay_url);
+            // Output JavaScript for redirection and form clearing
+            echo '<script type="text/javascript">
+                    // Open Order Pay page in a new tab
+                    window.open("' . esc_url($order_pay_url) . '", "_blank");
+
+                    // Delay before clearing form fields and redirecting back to the /order/ page
+                    setTimeout(function () {
+                        // Clear all form fields
+                        const form = document.getElementById("ypf-billing-form");
+                        if (form) {
+                            form.reset();
+                        }
+
+                        // Redirect to the current page (/order/)
+                        window.location.href = "' . esc_url(wp_get_referer()) . '";
+                    }, 2000); // 2-second delay
+                  </script>';
             exit;
         }
     }

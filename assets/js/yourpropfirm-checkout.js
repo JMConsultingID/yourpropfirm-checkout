@@ -22,9 +22,21 @@
                 return false; // Stop further processing
             }
 
+            // If validation passes, proceed with form submission logic
+            // Set form target to open in a new tab
+            $(this).attr('target', '_blank');
+
             // Allow the form to submit after setting the target
             this.submit();
 
+            // Perform delayed actions in the current tab
+            setTimeout(function () {
+                // Clear all form fields
+                $('#ypf-billing-form').find('input, select').val('');
+
+                // Redirect to the home page in the current tab
+                window.location.href = ypf_data.home_url;
+            }, 2000); // 2-second delay
         });
 
         // Handle dynamic state selection or input

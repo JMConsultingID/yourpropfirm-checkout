@@ -25,7 +25,7 @@ class Yourpropfirm_Checkout_Order_Handler {
     public function __construct() {
         add_action('init', [$this, 'handle_form_submission']);
         // Clear WooCommerce notices on the order-pay page
-        add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
+        //add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
     }
 
     /**

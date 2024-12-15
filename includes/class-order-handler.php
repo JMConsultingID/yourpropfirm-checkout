@@ -125,7 +125,9 @@ class Yourpropfirm_Checkout_Order_Handler {
 	        if (is_user_logged_in()) {
 	            $user_id = get_current_user_id();
 	            $order->set_customer_id($user_id);
-	        } 
+	        } else {
+	            $order->set_customer_id(0); // Guest order.
+	        }
 
 	        // Set order status to pending payment.
 	        $order->set_status('pending');

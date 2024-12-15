@@ -57,7 +57,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 	    ?>
 	    <form id="ypf-billing-form" method="post" target="_blank"> <!-- Add target="_blank" -->
-	        <h3><?php esc_html_e('Billing Address', 'yourpropfirm-checkout'); ?></h3>
+	        <h3><?php esc_html_e('Billing Information', 'yourpropfirm-checkout'); ?></h3>
 	        
 	        <!-- First Name and Last Name -->
 	        <label for="first_name"><?php esc_html_e('First Name', 'yourpropfirm-checkout'); ?></label>

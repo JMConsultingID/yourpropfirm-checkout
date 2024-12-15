@@ -126,9 +126,6 @@ class Yourpropfirm_Checkout_Order_Handler {
             if (!empty($all_notices['error'])) {
                 $preserved_notices['error'] = $all_notices['error'];
             }
-            if (!empty($all_notices['success'])) {
-                $preserved_notices['success'] = $all_notices['success'];
-            }
 
             // Clear all notices
             wc_clear_notices();

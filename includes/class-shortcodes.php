@@ -31,12 +31,20 @@ class Yourpropfirm_Checkout_Shortcodes {
      * Enqueue CSS and JS for the billing form.
      */
     public function enqueue_assets() {
+	    // Enqueue styles
 	    wp_enqueue_style('ypf-checkout-css', YPF_CHECKOUT_URL . 'assets/css/yourpropfirm-checkout.css', [], YPF_CHECKOUT_VERSION);
+	    // Enqueue scripts
 	    wp_enqueue_script('ypf-checkout-js', YPF_CHECKOUT_URL . 'assets/js/yourpropfirm-checkout.js', ['jquery'], YPF_CHECKOUT_VERSION, true);
-
-	    // Localize script to pass home URL
-	    wp_localize_script('ypf-checkout-js', 'ypf_home_url', esc_url(home_url()));
+	    // Pass PHP data to JavaScript
+	    $wc_countries = new WC_Countries();
+	    wp_localize_script('ypf-checkout-js', 'ypf_data', [
+	        'home_url'          => esc_url(home_url()),
+	        'states'            => $wc_countries->get_states(),
+	        'select_state_text' => __('Select State', 'yourpropfirm-checkout'),
+	        'no_states_text'    => __('No states available', 'yourpropfirm-checkout'),
+	    ]);
 	}
+
 
 
     /**

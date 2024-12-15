@@ -17,3 +17,61 @@
  * Text Domain:       yourpropfirm-checkout
  * Domain Path:       /languages
  */
+
+// Exit if accessed directly.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Define constants for plugin paths.
+define('YPF_CHECKOUT_VERSION', '1.0');
+define('YPF_CHECKOUT_DIR', plugin_dir_path(__FILE__));
+define('YPF_CHECKOUT_URL', plugin_dir_url(__FILE__));
+
+/**
+ * Initialize the plugin.
+ */
+class Yourpropfirm_Checkout {
+    /**
+     * Constructor: Register hooks and load dependencies.
+     */
+    public function __construct() {
+        // Load plugin text domain for translations.
+        add_action('plugins_loaded', [$this, 'load_text_domain']);
+
+        // Include necessary files.
+        $this->includes();
+
+        // Initialize the plugin features.
+        $this->init();
+    }
+
+    /**
+     * Load plugin text domain for translations.
+     */
+    public function load_text_domain() {
+        load_plugin_textdomain('yourpropfirm-checkout', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+    }
+
+    /**
+     * Include core functionality files.
+     */
+    private function includes() {
+        require_once YPF_CHECKOUT_DIR . 'includes/class-order-handler.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-shortcodes.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-redirects.php';
+    }
+
+    /**
+     * Initialize core functionality.
+     */
+    private function init() {
+        // Instantiate the classes.
+        new Yourpropfirm_Checkout_Order_Handler();
+        new Yourpropfirm_Checkout_Shortcodes();
+        new Yourpropfirm_Checkout_Redirects();
+    }
+}
+
+// Initialize the plugin.
+new Yourpropfirm_Checkout();

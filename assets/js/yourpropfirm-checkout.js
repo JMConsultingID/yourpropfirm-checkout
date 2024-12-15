@@ -39,7 +39,7 @@
             }, 2000); // 2-second delay
         });
 
-        // Dynamic state selection or text input
+        // Handle dynamic state selection or input
         $('#country').on('change', function () {
             const country = $(this).val(); // Selected country code
             const states = ypf_data.states; // Get states from localized data
@@ -47,7 +47,7 @@
             // Clear any existing state field
             $('#state-container').empty();
 
-            if (states[country]) {
+            if (states[country] && Object.keys(states[country]).length) {
                 // Create a dropdown if states exist
                 let options = '<option value="">' + ypf_data.select_state_text + '</option>';
                 $.each(states[country], function(key, value) {
@@ -59,6 +59,9 @@
                 $('#state-container').append('<input type="text" name="state" id="state" placeholder="' + ypf_data.enter_state_text + '" required>');
             }
         });
+
+        // Trigger change event on page load to initialize the state field
+        $('#country').trigger('change');
     });
 
 })( jQuery );

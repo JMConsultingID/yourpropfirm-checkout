@@ -191,42 +191,42 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 	    <script>
 	        jQuery(document).ready(function ($) {
-	            // Update form's target dynamically
-	            $('#ypf-billing-form').on('submit', function (e) {
+	            // Handle form submission
+			    $('#ypf-billing-form').on('submit', function (e) {
+			        e.preventDefault(); // Prevent default submission to ensure proper handling
 
-	            	// Get checkbox elements
-		        const termsCheckbox = $('#terms');
-		        const privacyCheckbox = $('#privacy_policy');
-		        
-		        // Check if both checkboxes are checked
-		        if (!termsCheckbox.is(':checked') || !privacyCheckbox.is(':checked')) {
-		            e.preventDefault(); // Prevent form submission
-		            
-		            // Show error messages
-		            if (!termsCheckbox.is(':checked')) {
-		                alert('Please accept the Terms and Conditions to proceed.');
-		            }
-		            if (!privacyCheckbox.is(':checked')) {
-		                alert('Please accept the Privacy Policy to proceed.');
-		            }
-		            
-		            return false;
-		        }
-		        
-		        return true; // Allow form submission if both are checked
+			        // Get checkbox elements
+			        const termsCheckbox = $('#terms');
+			        const privacyCheckbox = $('#privacy_policy');
 
-		            // Set form target to open in a new tab
-		            $(this).attr('target', '_blank');
+			        // Validate checkboxes
+			        if (!termsCheckbox.is(':checked') || !privacyCheckbox.is(':checked')) {
+			            // Show error messages if not checked
+			            if (!termsCheckbox.is(':checked')) {
+			                alert('Please accept the Terms and Conditions to proceed.');
+			            }
+			            if (!privacyCheckbox.is(':checked')) {
+			                alert('Please accept the Privacy Policy to proceed.');
+			            }
+			            return false; // Stop further processing
+			        }
 
-		            // Delay for 2 seconds to allow the new tab to open
-		            setTimeout(function () {
-		                // Clear all form fields
-		                $('#ypf-billing-form').find('input, select').val('');
+			        // If validation passes, proceed with form submission logic
+			        // Set form target to open in a new tab
+			        $(this).attr('target', '_blank');
 
-		                // Redirect to the home page in the current tab
-		                window.location.href = "<?php echo esc_url(home_url()); ?>";
-		            }, 2000); // 2-second delay
-		        });
+			        // Allow the form to submit after setting the target
+			        this.submit();
+
+			        // Perform delayed actions in the current tab
+			        setTimeout(function () {
+			            // Clear all form fields
+			            $('#ypf-billing-form').find('input, select').val('');
+
+			            // Redirect to the home page in the current tab
+			            window.location.href = "<?php echo esc_url(home_url()); ?>";
+			        }, 2000); // 2-second delay
+			    });
 
 	            // Dynamic state selection
 	            $('#country').on('change', function () {

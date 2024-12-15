@@ -153,10 +153,18 @@ class Yourpropfirm_Checkout_Shortcodes {
 	            <?php endforeach; ?>
 	        </select>
 
-	        <label for="state"><?php esc_html_e('State', 'yourpropfirm-checkout'); ?></label>
-	        <select name="state" id="state">
-	            <option value=""><?php esc_html_e('Select State', 'yourpropfirm-checkout'); ?></option>
-	        </select>
+	        <label for="state"><?php esc_html_e('State/Region', 'yourpropfirm-checkout'); ?></label>
+			<div id="state-container">
+			    <select name="state" id="state" required>
+			        <option value=""><?php esc_html_e('Select State', 'yourpropfirm-checkout'); ?></option>
+			        <?php
+			        $wc_countries = new WC_Countries();
+			        foreach ($wc_countries->get_states('US') as $code => $name) : // Default to US states
+			            echo '<option value="' . esc_attr($code) . '">' . esc_html($name) . '</option>';
+			        endforeach;
+			        ?>
+			    </select>
+			</div>
 
 	        <!-- City and Postal Code -->
 	        <label for="city"><?php esc_html_e('City', 'yourpropfirm-checkout'); ?></label>

@@ -99,15 +99,22 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        <input type="text" name="postal_code" id="postal_code" required>
 
 	        <!-- Terms and Conditions -->
-	        <div class="terms-and-conditions">
-	            <input type="checkbox" id="terms_conditions" name="terms_conditions" required>
-	            <label for="terms_conditions">
-	                <?php printf(
-	                    __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
-	                    esc_url(get_permalink(wc_get_page_id('terms')))
-	                ); ?>
-	            </label>
-	        </div>
+			<div class="terms-and-conditions">
+			    <?php
+			    // Get the standard WooCommerce T&C checkbox and content
+			    woocommerce_form_field('terms', array(
+			        'type' => 'checkbox',
+			        'class' => array('form-row-wide', 'terms-field'),
+			        'label_class' => array('woocommerce-form__label', 'woocommerce-form__label-for-checkbox', 'checkbox'),
+			        'input_class' => array('woocommerce-form__input', 'woocommerce-form__input-checkbox'),
+			        'required' => true,
+			        'label' => wc_get_terms_and_conditions_checkbox_text(),
+			    ));
+
+			    // Display the terms and conditions content
+			    do_action('woocommerce_checkout_terms_and_conditions');
+			    ?>
+			</div>
 
 	        <!-- Submit Button -->
 	        <button type="submit" id="ypf-submit-button"><?php esc_html_e('Proceed', 'yourpropfirm-checkout'); ?></button>

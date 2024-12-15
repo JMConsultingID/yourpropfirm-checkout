@@ -43,7 +43,6 @@ class Yourpropfirm_Checkout_Order_Handler {
             // Check if Terms and Privacy Policy are accepted
             if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
                 wc_add_notice(__('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout'), 'error');
-                wp_redirect(wp_get_referer());
                 exit;
             }
 
@@ -58,21 +57,11 @@ class Yourpropfirm_Checkout_Order_Handler {
                 if (is_wp_error($coupon_validation)) {
                     // Display the error message from WooCommerce
                     wc_add_notice($coupon_validation->get_error_message(), 'error');
-                   // Output JavaScript for redirection
-                    echo '<script type="text/javascript">
-                            window.location.href = "' . esc_url(wp_get_referer() ?: home_url('/order/')) . '";
-                          </script>';
-                    exit;
                 }
 
                 // Check if the coupon was successfully applied
                 if (!WC()->cart->has_discount($coupon_code)) {
                     wc_add_notice(__('Invalid coupon code.', 'yourpropfirm-checkout'), 'error');
-                    // Output JavaScript for redirection
-                    echo '<script type="text/javascript">
-                            window.location.href = "' . esc_url(wp_get_referer() ?: home_url('/order/')) . '";
-                          </script>';
-                    exit;
                 }
 
                 // Add a success message
@@ -84,7 +73,6 @@ class Yourpropfirm_Checkout_Order_Handler {
             foreach ($required_fields as $field) {
                 if (empty($_POST[$field])) {
                     wc_add_notice(__('Please fill in all required fields.', 'yourpropfirm-checkout'), 'error');
-                    wp_redirect(wp_get_referer());
                     exit;
                 }
             }
@@ -107,7 +95,6 @@ class Yourpropfirm_Checkout_Order_Handler {
 
             if (is_wp_error($order_id)) {
                 wc_add_notice(__('Unable to create order. Please try again.', 'yourpropfirm-checkout'), 'error');
-                wp_redirect(wp_get_referer());
                 exit;
             }
 
@@ -118,23 +105,7 @@ class Yourpropfirm_Checkout_Order_Handler {
 			    $order->get_checkout_payment_url()
 			);
 
-            // Output JavaScript for redirection and form clearing
-            echo '<script type="text/javascript">
-                    // Open Order Pay page in a new tab
-                    window.open("' . esc_url($order_pay_url) . '", "_blank");
-
-                    // Delay before clearing form fields and redirecting back to the /order/ page
-                    setTimeout(function () {
-                        // Clear all form fields
-                        const form = document.getElementById("ypf-billing-form");
-                        if (form) {
-                            form.reset();
-                        }
-
-                        // Redirect to the current page (/order/)
-                        window.location.href = "' . esc_url(wp_get_referer()) . '";
-                    }, 2000); // 2-second delay
-                  </script>';
+            wp_redirect($order_pay_url);
             exit;
         }
     }

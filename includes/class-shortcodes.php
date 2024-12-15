@@ -117,7 +117,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 	            </tfoot>
 	        </table>
 	    </div>
-	    <form id="ypf-billing-form" method="post"> <!-- Add target="_blank" -->
+	    <form id="ypf-billing-form" method="post" target="_blank"> <!-- Add target="_blank" -->
 	        <h3><?php esc_html_e('Billing Information', 'yourpropfirm-checkout'); ?></h3>
 	        <div class="container">
 		        <!-- First Name and Last Name -->

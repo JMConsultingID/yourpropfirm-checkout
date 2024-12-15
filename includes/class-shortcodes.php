@@ -29,8 +29,6 @@ class Yourpropfirm_Checkout_Shortcodes {
     /**
      * Render the custom billing form.
      */
-    <?php
-	// Updated render_billing_form method in class-shortcodes.php
 	public function render_billing_form() {
 	    ob_start();
 

@@ -209,7 +209,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 		    </div>
 
 	        <!-- Submit Button -->
-	        <button type="submit" id="ypf-submit-button"><?php esc_html_e('Proceed', 'yourpropfirm-checkout'); ?></button>
+	        <button type="submit" id="ypf-submit-button"><?php esc_html_e('Proceed With Payment', 'yourpropfirm-checkout'); ?></button>
 	    </form>
 	    <?php
 

@@ -53,9 +53,8 @@ class Yourpropfirm_Checkout_Shortcodes {
 		if (WC()->cart->is_empty()) {
 	        // Display a WooCommerce notice
 	        wc_add_notice(__('Your cart is empty. Please add items to your cart before proceeding.', 'yourpropfirm-checkout'), 'error');
-	        
-	        // Redirect to the cart page
-	        wp_safe_redirect(wc_get_cart_url());
+	        $custom_checkout_url = home_url(); // Update the slug if necessary.
+            wp_safe_redirect($custom_checkout_url);
 	        exit;
 	    }
 

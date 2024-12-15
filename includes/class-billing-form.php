@@ -18,49 +18,33 @@ class Yourprofirm_Billing_Form {
     }
 
     public static function render_billing_form() {
+        if (WC()->cart->is_empty()) {
+            echo '<p>' . __('Your cart is empty. Please add products to proceed.', 'yourprofirm-checkout') . '</p>';
+            return;
+        }
+
+        // WooCommerce checkout fields
+        $checkout = WC()->checkout();
+        $fields = $checkout->get_checkout_fields('billing');
+
         ob_start();
         ?>
         <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="POST">
             <input type="hidden" name="action" value="yourprofirm_billing_form">
             <?php wp_nonce_field('yourprofirm_billing_form_nonce'); ?>
 
-            <div>
-                <label for="billing_first_name">First Name</label>
-                <input type="text" name="billing_first_name" id="billing_first_name" required>
-            </div>
-            <div>
-                <label for="billing_last_name">Last Name</label>
-                <input type="text" name="billing_last_name" id="billing_last_name" required>
-            </div>
-            <div>
-                <label for="billing_email">Email</label>
-                <input type="email" name="billing_email" id="billing_email" required>
-            </div>
-            <div>
-                <label for="billing_phone">Phone</label>
-                <input type="tel" name="billing_phone" id="billing_phone" required>
-            </div>
-            <div>
-                <label for="billing_country">Country</label>
-                <select name="billing_country" id="billing_country" required>
-                    <?php foreach (WC()->countries->get_allowed_countries() as $code => $name) : ?>
-                        <option value="<?php echo esc_attr($code); ?>"><?php echo esc_html($name); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div>
-                <label for="billing_state">State</label>
-                <select name="billing_state" id="billing_state" required>
-                    <?php foreach (WC()->countries->get_states('US') as $code => $name) : ?>
-                        <option value="<?php echo esc_attr($code); ?>"><?php echo esc_html($name); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <button type="submit">Submit</button>
+            <?php
+            // Loop through all billing fields
+            foreach ($fields as $key => $field) {
+                woocommerce_form_field($key, $field);
+            }
+            ?>
+            <button type="submit"><?php _e('Submit Order', 'yourprofirm-checkout'); ?></button>
         </form>
         <?php
         return ob_get_clean();
     }
+
 
     public static function handle_form_submission() {
         // Verify nonce for security

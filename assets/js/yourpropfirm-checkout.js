@@ -39,23 +39,24 @@
             }, 2000); // 2-second delay
         });
 
-         // Dynamic state selection or text input
+        // Dynamic state selection or text input
         $('#country').on('change', function () {
-            var country = $(this).val();
-            var states = ypf_data.states; // Get states from localized data
+            const country = $(this).val(); // Selected country code
+            const states = ypf_data.states; // Get states from localized data
+
+            // Clear any existing state field
+            $('#state-container').empty();
 
             if (states[country]) {
-                // Replace with a dropdown if states exist
-                var options = '<option value="">' + ypf_data.select_state_text + '</option>';
+                // Create a dropdown if states exist
+                let options = '<option value="">' + ypf_data.select_state_text + '</option>';
                 $.each(states[country], function(key, value) {
                     options += '<option value="' + key + '">' + value + '</option>';
                 });
-
-                // Replace text input with a dropdown
-                $('#state').replaceWith('<select name="state" id="state" required>' + options + '</select>');
+                $('#state-container').append('<select name="state" id="state" required>' + options + '</select>');
             } else {
-                // Replace dropdown with a text input if no states exist
-                $('#state').replaceWith('<input type="text" name="state" id="state" placeholder="' + ypf_data.enter_state_text + '" required>');
+                // Create a text input if no states exist
+                $('#state-container').append('<input type="text" name="state" id="state" placeholder="' + ypf_data.enter_state_text + '" required>');
             }
         });
     });

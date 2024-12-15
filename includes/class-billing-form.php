@@ -18,9 +18,11 @@ class Yourprofirm_Billing_Form {
     }
 
     public static function render_billing_form() {
-        if (WC()->cart->is_empty()) {
-            echo '<p>' . __('Your cart is empty. Please add products to proceed.', 'yourprofirm-checkout') . '</p>';
-            return;
+        // Ensure this check runs only on the /order/ page
+        if (is_page('order') && WC()->cart->is_empty()) {
+            wc_add_notice(__('Your cart is empty. Please add products to proceed.', 'yourprofirm-checkout'), 'error');
+            wp_redirect(wc_get_cart_url()); // Redirect to the cart page
+            exit;
         }
 
         // WooCommerce checkout fields

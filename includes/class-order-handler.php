@@ -40,27 +40,38 @@ class Yourpropfirm_Checkout_Order_Handler {
                 exit;
             }
 
+            // Check if Terms and Privacy Policy are accepted
+            if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
+                wc_add_notice(__('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout'), 'error');
+                wp_redirect(wp_get_referer());
+                exit;
+            }
+
             // Validate and apply coupon code if provided
             if (!empty($_POST['coupon_code'])) {
                 $coupon_code = sanitize_text_field($_POST['coupon_code']);
-                $coupon_applied = WC()->cart->apply_coupon($coupon_code);
 
-                if (is_wp_error($coupon_applied)) {
-                    wc_add_notice($coupon_applied->get_error_message(), 'error');
+                // Check if the coupon is valid
+                $coupon = new WC_Coupon($coupon_code);
+                $coupon_validation = WC()->cart->apply_coupon($coupon_code);
+
+                if (is_wp_error($coupon_validation)) {
+                    // Display the error message from WooCommerce
+                    wc_add_notice($coupon_validation->get_error_message(), 'error');
                     wp_redirect(wp_get_referer());
                     exit;
                 }
 
-                // Check if the coupon is valid
+                // Check if the coupon was successfully applied
                 if (!WC()->cart->has_discount($coupon_code)) {
                     wc_add_notice(__('Invalid coupon code. Please try again.', 'yourpropfirm-checkout'), 'error');
                     wp_redirect(wp_get_referer());
                     exit;
                 }
-            }
 
-            // Add a success message
-            wc_add_notice(__('Coupon applied successfully!', 'yourpropfirm-checkout'), 'success');
+                // Add a success message
+                wc_add_notice(__('Coupon applied successfully!', 'yourpropfirm-checkout'), 'success');
+            }
 
             // Verify required fields.
             $required_fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'country', 'city', 'postal_code'];
@@ -159,11 +170,23 @@ class Yourpropfirm_Checkout_Order_Handler {
                 }
             }
 
-            // Set order status to pending payment.
-            $order->set_status('pending');
-
             // Calculate totals and save order.
             $order->calculate_totals();
+
+            // Check if the total is 0
+            if ($order->get_total() == 0) {
+                // Mark the order as completed and redirect to the Thank You page
+                $order->set_status('completed');
+                $order->save();
+
+                // Redirect to the Thank You page
+                $thank_you_url = wc_get_endpoint_url('order-received', $order->get_id(), wc_get_checkout_url());
+                wp_redirect($thank_you_url);
+                exit;
+            }
+
+            // If total is not 0, set the order status to pending payment
+            $order->set_status('pending');
             $order->save();
 
             // Clear the WooCommerce cart.

@@ -11,9 +11,9 @@ class Yourprofirm_Order_Handler {
         return;
     }
 
-    // Check if cart is empty
-    if (WC()->cart->is_empty()) {
-        wp_die(__('Your cart is empty. Please add products to your cart before proceeding.', 'yourprofirm-checkout'));
+    if (is_page('order') && WC()->cart->is_empty()) {
+        echo '<p>' . __('Your cart is empty. Please add products to proceed.', 'yourprofirm-checkout') . '</p>';
+        return;
     }
 
     // Check if session data exists

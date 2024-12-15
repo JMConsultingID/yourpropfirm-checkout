@@ -177,6 +177,10 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        <label for="postal_code"><?php esc_html_e('Postal Code', 'yourpropfirm-checkout'); ?></label>
 	        <input type="text" name="postal_code" id="postal_code" required>
 
+	        <label for="coupon_code"><?php esc_html_e('Coupon Code', 'yourpropfirm-checkout'); ?></label>
+			<input type="text" name="coupon_code" id="coupon_code" placeholder="<?php esc_html_e('Enter Coupon Code', 'yourpropfirm-checkout'); ?>">
+
+
 	        <!-- Terms and Conditions -->
 	        <div class="terms-and-conditions">
 		        <?php

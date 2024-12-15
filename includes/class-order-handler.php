@@ -40,6 +40,28 @@ class Yourpropfirm_Checkout_Order_Handler {
                 exit;
             }
 
+            // Validate and apply coupon code if provided
+            if (!empty($_POST['coupon_code'])) {
+                $coupon_code = sanitize_text_field($_POST['coupon_code']);
+                $coupon_applied = WC()->cart->apply_coupon($coupon_code);
+
+                if (is_wp_error($coupon_applied)) {
+                    wc_add_notice($coupon_applied->get_error_message(), 'error');
+                    wp_redirect(wp_get_referer());
+                    exit;
+                }
+
+                // Check if the coupon is valid
+                if (!WC()->cart->has_discount($coupon_code)) {
+                    wc_add_notice(__('Invalid coupon code. Please try again.', 'yourpropfirm-checkout'), 'error');
+                    wp_redirect(wp_get_referer());
+                    exit;
+                }
+            }
+
+            // Add a success message
+            wc_add_notice(__('Coupon applied successfully!', 'yourpropfirm-checkout'), 'success');
+
             // Verify required fields.
             $required_fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'country', 'city', 'postal_code'];
             foreach ($required_fields as $field) {

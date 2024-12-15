@@ -41,11 +41,10 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        'home_url'          => esc_url(home_url()),
 	        'states'            => $wc_countries->get_states(),
 	        'select_state_text' => __('Select State', 'yourpropfirm-checkout'),
+	        'enter_state_text'  => __('Enter State/Region', 'yourpropfirm-checkout'), // For text input placeholder
 	        'no_states_text'    => __('No states available', 'yourpropfirm-checkout'),
 	    ]);
 	}
-
-
 
     /**
      * Render the custom billing form.

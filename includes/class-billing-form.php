@@ -31,18 +31,60 @@ class Yourprofirm_Billing_Form {
 
         ob_start();
         ?>
+
+        <!-- Display Cart Contents -->
+        <div class="woocommerce-cart">
+            <h2><?php _e('Your Order', 'yourprofirm-checkout'); ?></h2>
+            <table class="shop_table woocommerce-checkout-review-order-table">
+                <thead>
+                    <tr>
+                        <th class="product-name"><?php _e('Product', 'woocommerce'); ?></th>
+                        <th class="product-total"><?php _e('Total', 'woocommerce'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) : 
+                        $product = $cart_item['data'];
+                    ?>
+                        <tr>
+                            <td class="product-name">
+                                <?php echo $product->get_name(); ?>
+                                <strong class="product-quantity">× <?php echo $cart_item['quantity']; ?></strong>
+                            </td>
+                            <td class="product-total">
+                                <?php echo wc_price($cart_item['line_total']); ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th><?php _e('Subtotal', 'woocommerce'); ?></th>
+                        <td><?php echo WC()->cart->get_cart_subtotal(); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Total', 'woocommerce'); ?></th>
+                        <td><?php echo WC()->cart->get_total(); ?></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Billing Form -->
         <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="POST">
             <input type="hidden" name="action" value="yourprofirm_billing_form">
             <?php wp_nonce_field('yourprofirm_billing_form_nonce'); ?>
 
+            <h2><?php _e('Billing Details', 'yourprofirm-checkout'); ?></h2>
             <?php
             // Loop through all billing fields
             foreach ($fields as $key => $field) {
                 woocommerce_form_field($key, $field);
             }
             ?>
-            <button type="submit"><?php _e('Submit Order', 'yourprofirm-checkout'); ?></button>
+            <button type="submit" class="button alt"><?php _e('Submit Order', 'yourprofirm-checkout'); ?></button>
         </form>
+
         <?php
         return ob_get_clean();
     }

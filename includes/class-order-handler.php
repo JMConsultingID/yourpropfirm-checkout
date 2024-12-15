@@ -58,15 +58,11 @@ class Yourpropfirm_Checkout_Order_Handler {
                 if (is_wp_error($coupon_validation)) {
                     // Display the error message from WooCommerce
                     wc_add_notice($coupon_validation->get_error_message(), 'error');
-                    wp_redirect(wp_get_referer());
-                    exit;
                 }
 
                 // Check if the coupon was successfully applied
                 if (!WC()->cart->has_discount($coupon_code)) {
                     wc_add_notice(__('Invalid coupon code. Please try again.', 'yourpropfirm-checkout'), 'error');
-                    wp_redirect(wp_get_referer());
-                    exit;
                 }
 
                 // Add a success message
@@ -122,9 +118,30 @@ class Yourpropfirm_Checkout_Order_Handler {
      */
     public function clear_notices_on_order_pay() {
         if (is_wc_endpoint_url('order-pay')) {
+            // Get all current notices
+            $all_notices = wc_get_notices();
+
+            // Preserve specific notices (e.g., error and success notices for coupons)
+            $preserved_notices = [];
+            if (!empty($all_notices['error'])) {
+                $preserved_notices['error'] = $all_notices['error'];
+            }
+            if (!empty($all_notices['success'])) {
+                $preserved_notices['success'] = $all_notices['success'];
+            }
+
+            // Clear all notices
             wc_clear_notices();
+
+            // Add back the preserved notices
+            foreach ($preserved_notices as $type => $notices) {
+                foreach ($notices as $notice) {
+                    wc_add_notice($notice['notice'], $type);
+                }
+            }
         }
     }
+
 
     /**
      *

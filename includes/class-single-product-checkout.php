@@ -23,19 +23,17 @@ class YourPropfirm_Single_Product_Checkout {
      * Setup single product checkout mode.
      */
     public function setup_single_product_checkout_mode() {
-        if (get_option('yourpropfirm_checkout_mode') === 'single') {
-            // Disable add to cart messages.
-            add_filter('wc_add_to_cart_message_html', '__return_false');
+        // Disable add to cart messages.
+        add_filter('wc_add_to_cart_message_html', '__return_false');
 
-            // Empty the cart before adding a new product.
-            add_filter('woocommerce_add_cart_item_data', [$this, 'empty_cart_before_adding_product']);
+        // Empty the cart before adding a new product.
+        add_filter('woocommerce_add_cart_item_data', [$this, 'empty_cart_before_adding_product']);
 
-            // Redirect to checkout after adding product.
-            add_filter('woocommerce_add_to_cart_redirect', [$this, 'redirect_to_checkout']);
+        // Redirect to checkout after adding product.
+        add_filter('woocommerce_add_to_cart_redirect', [$this, 'redirect_to_checkout']);
 
-            // Check for multiple products in the cart at checkout.
-            add_action('woocommerce_before_checkout_form', [$this, 'check_for_multiple_products']);
-        }
+        // Check for multiple products in the cart at checkout.
+        add_action('woocommerce_before_checkout_form', [$this, 'check_for_multiple_products']);
 
         // Disable order notes field.
         add_filter('woocommerce_enable_order_notes_field', '__return_false');

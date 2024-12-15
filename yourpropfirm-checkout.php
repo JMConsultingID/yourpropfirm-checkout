@@ -81,7 +81,7 @@ class Yourpropfirm_Checkout {
         // Instantiate the classes.
         new Yourpropfirm_Checkout_Order_Handler();
         new Yourpropfirm_Checkout_Shortcodes();
-        // new Yourpropfirm_Checkout_Redirects();
+        new Yourpropfirm_Checkout_Redirects();
     }
 }
 

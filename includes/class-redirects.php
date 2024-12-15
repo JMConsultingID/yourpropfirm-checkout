@@ -26,8 +26,12 @@ class Yourpropfirm_Checkout_Redirects {
             // Replace with your custom billing form page URL.
             $custom_checkout_url = home_url('/order/'); // Update the slug if necessary.
 
+            // Clear WooCommerce notices.
+	        wc_clear_notices();
+
             wp_safe_redirect($custom_checkout_url);
             exit;
         }
     }
+
 }

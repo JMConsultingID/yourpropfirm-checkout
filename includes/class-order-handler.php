@@ -11,12 +11,12 @@ class Yourprofirm_Order_Handler {
         return;
     }
 
-     // Check if cart is empty
-    if (WC()->cart->is_empty()) {
-        wc_add_notice(__('Your cart is empty. Please add products to your cart before proceeding.', 'yourprofirm-checkout'), 'error');
-        wp_redirect(wc_get_cart_url()); // Redirect to the cart page
-        exit;
-    }
+    // Ensure this check runs only on the /order/ page
+        if (is_page('order') && WC()->cart->is_empty()) {
+            wc_add_notice(__('Your cart is empty. Please add products to proceed.', 'yourprofirm-checkout'), 'error');
+            wp_redirect(wc_get_cart_url()); // Redirect to the cart page
+            exit;
+        }
 
     // Check if session data exists
     $billing_data = WC()->session->get('yourprofirm_billing_data');

@@ -81,41 +81,50 @@ class Yourpropfirm_Checkout_Order_Handler {
      * @return int|\WP_Error Order ID or error.
      */
     private function create_wc_order($data) {
-        try {
-            // Initialize WooCommerce order.
-            $order = wc_create_order();
+	    try {
+	        // Initialize WooCommerce order.
+	        $order = wc_create_order();
 
-            // Add cart items to the order.
-            foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
-                $product = $cart_item['data'];
-                $quantity = $cart_item['quantity'];
-                $order->add_product($product, $quantity);
-            }
+	        // Add cart items to the order.
+	        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+	            $product = $cart_item['data'];
+	            $quantity = $cart_item['quantity'];
+	            $order->add_product($product, $quantity);
+	        }
 
-            // Set billing fields.
-            $order->set_billing_first_name($data['first_name']);
-            $order->set_billing_last_name($data['last_name']);
-            $order->set_billing_email($data['email']);
-            $order->set_billing_phone($data['phone']);
-            $order->set_billing_address_1($data['address']);
-            $order->set_billing_city($data['city']);
-            $order->set_billing_postcode($data['postal_code']);
-            $order->set_billing_country($data['country']);
-            $order->set_billing_state($data['state']);
+	        // Set billing fields.
+	        $order->set_billing_first_name($data['first_name']);
+	        $order->set_billing_last_name($data['last_name']);
+	        $order->set_billing_email($data['email']);
+	        $order->set_billing_phone($data['phone']);
+	        $order->set_billing_address_1($data['address']);
+	        $order->set_billing_city($data['city']);
+	        $order->set_billing_postcode($data['postal_code']);
+	        $order->set_billing_country($data['country']);
+	        $order->set_billing_state($data['state']);
 
-            // Set order status to pending payment.
-            $order->set_status('pending');
+	        // Attach the order to the logged-in customer (if logged in).
+	        if (is_user_logged_in()) {
+	            $user_id = get_current_user_id();
+	            $order->set_customer_id($user_id);
+	        } else {
+	            $order->set_customer_id(0); // Guest order.
+	        }
 
-            // Calculate totals and save order.
-            $order->calculate_totals();
-            $order->save();
+	        // Set order status to pending payment.
+	        $order->set_status('pending');
 
-            // Clear the WooCommerce cart.
-            WC()->cart->empty_cart();
+	        // Calculate totals and save order.
+	        $order->calculate_totals();
+	        $order->save();
 
-            return $order->get_id();
-        } catch (Exception $e) {
-            return new WP_Error('order_error', $e->getMessage());
-        }
-    }
+	        // Clear the WooCommerce cart.
+	        WC()->cart->empty_cart();
+
+	        return $order->get_id();
+	    } catch (Exception $e) {
+	        return new WP_Error('order_error', $e->getMessage());
+	    }
+	}
+
 }

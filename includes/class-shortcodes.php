@@ -101,17 +101,20 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        <!-- Terms and Conditions -->
 			<div class="terms-and-conditions">
 			    <?php
-			    // Terms and Conditions checkbox
+			    // Terms and Conditions checkbox with manual label
 			    woocommerce_form_field('terms', array(
 			        'type' => 'checkbox',
 			        'class' => array('form-row-wide', 'terms-field'),
 			        'label_class' => array('woocommerce-form__label', 'woocommerce-form__label-for-checkbox', 'checkbox'),
 			        'input_class' => array('woocommerce-form__input', 'woocommerce-form__input-checkbox'),
 			        'required' => true,
-			        'label' => wc_get_terms_and_conditions_checkbox_text(),
+			        'label' => sprintf(
+			            __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
+			            esc_url(get_permalink(wc_get_page_id('terms')))
+			        ),
 			    ));
 
-			    // Privacy Policy checkbox
+			    // Privacy Policy checkbox with manual label
 			    woocommerce_form_field('privacy_policy', array(
 			        'type' => 'checkbox',
 			        'class' => array('form-row-wide', 'privacy-field'),
@@ -124,10 +127,8 @@ class Yourpropfirm_Checkout_Shortcodes {
 			        ),
 			    ));
 
-			    // Display the terms and conditions content
+			    // Display additional content if needed
 			    do_action('woocommerce_checkout_terms_and_conditions');
-			    
-			    // Display privacy policy text
 			    do_action('woocommerce_checkout_privacy_policy_text');
 			    ?>
 			</div>

@@ -101,7 +101,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        <!-- Terms and Conditions -->
 			<div class="terms-and-conditions">
 			    <?php
-			    // Get the standard WooCommerce T&C checkbox and content
+			    // Terms and Conditions checkbox
 			    woocommerce_form_field('terms', array(
 			        'type' => 'checkbox',
 			        'class' => array('form-row-wide', 'terms-field'),
@@ -111,8 +111,24 @@ class Yourpropfirm_Checkout_Shortcodes {
 			        'label' => wc_get_terms_and_conditions_checkbox_text(),
 			    ));
 
+			    // Privacy Policy checkbox
+			    woocommerce_form_field('privacy_policy', array(
+			        'type' => 'checkbox',
+			        'class' => array('form-row-wide', 'privacy-field'),
+			        'label_class' => array('woocommerce-form__label', 'woocommerce-form__label-for-checkbox', 'checkbox'),
+			        'input_class' => array('woocommerce-form__input', 'woocommerce-form__input-checkbox'),
+			        'required' => true,
+			        'label' => sprintf(
+			            __('I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>', 'yourpropfirm-checkout'),
+			            get_privacy_policy_url()
+			        ),
+			    ));
+
 			    // Display the terms and conditions content
 			    do_action('woocommerce_checkout_terms_and_conditions');
+			    
+			    // Display privacy policy text
+			    do_action('woocommerce_checkout_privacy_policy_text');
 			    ?>
 			</div>
 

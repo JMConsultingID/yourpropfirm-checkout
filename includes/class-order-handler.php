@@ -25,7 +25,7 @@ class Yourpropfirm_Checkout_Order_Handler {
     public function __construct() {
         add_action('init', [$this, 'handle_form_submission']);
         // Clear WooCommerce notices on the order-pay page
-        add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
+        // add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
     }
 
     /**
@@ -105,13 +105,15 @@ class Yourpropfirm_Checkout_Order_Handler {
 	        if (!$customer_id) {
 	            // Step 2: Create a new customer if it doesn't exist
 	            $random_password = wp_generate_password(); // Generate a random password
-	            $customer_id = wc_create_new_customer($data['email'], $data['email'], $random_password);
+	            $username = sanitize_user(current(explode('@', $data['email']))); // Use the part before "@" as username
+
+	            $customer_id = wc_create_new_customer($data['email'], $username, $random_password);
 
 	            if (is_wp_error($customer_id)) {
-	                throw new Exception(__('Unable to create customer.', 'yourpropfirm-checkout'));
+	                throw new Exception(__('Unable to create customer: ', 'yourpropfirm-checkout') . $customer_id->get_error_message());
 	            }
 
-	            // Optionally send the new customer an email about their account
+	            // Optionally send an email to the new customer with their account credentials
 	            wp_new_user_notification($customer_id, null, 'both');
 	        }
 

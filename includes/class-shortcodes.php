@@ -58,11 +58,16 @@ class Yourpropfirm_Checkout_Shortcodes {
 		    exit;
 	    }
 	    ob_start();
+	    // Display WooCommerce notices
+	    if (function_exists('wc_print_notices')) {
+	        wc_print_notices();
+	    }
 	    // WooCommerce country and state data
 	    $wc_countries = new WC_Countries();
 	    $countries = $wc_countries->get_countries();
 	    $states = $wc_countries->get_states();
 	    ?>
+
 	    <div class="ypf-cart-review">
 	        <h3><?php esc_html_e('Order Summary', 'yourpropfirm-checkout'); ?></h3>
 	        <table class="shop_table shop_table_responsive">

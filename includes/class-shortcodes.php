@@ -99,39 +99,35 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        <input type="text" name="postal_code" id="postal_code" required>
 
 	        <!-- Terms and Conditions -->
-			<div class="terms-and-conditions">
-			    <?php
-			    // Terms and Conditions checkbox with manual label
-			    woocommerce_form_field('terms', array(
-			        'type' => 'checkbox',
-			        'class' => array('form-row-wide', 'terms-field'),
-			        'label_class' => array('woocommerce-form__label', 'woocommerce-form__label-for-checkbox', 'checkbox'),
-			        'input_class' => array('woocommerce-form__input', 'woocommerce-form__input-checkbox'),
-			        'required' => true,
-			        'label' => sprintf(
-			            __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
-			            esc_url(get_permalink(wc_get_page_id('terms')))
-			        ),
-			    ));
+	        <div class="terms-and-conditions">
+		        <?php
+		        // Terms and Conditions checkbox
+		        woocommerce_form_field('terms', array(
+		            'type' => 'checkbox',
+		            'class' => array('form-row-wide', 'terms-field'),
+		            'label_class' => array('woocommerce-form__label', 'woocommerce-form__label-for-checkbox', 'checkbox'),
+		            'input_class' => array('woocommerce-form__input', 'woocommerce-form__input-checkbox'),
+		            'required' => true,
+		            'label' => sprintf(
+		                __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
+		                esc_url(get_permalink(wc_get_page_id('terms')))
+		            ),
+		        ));
 
-			    // Privacy Policy checkbox with manual label
-			    woocommerce_form_field('privacy_policy', array(
-			        'type' => 'checkbox',
-			        'class' => array('form-row-wide', 'privacy-field'),
-			        'label_class' => array('woocommerce-form__label', 'woocommerce-form__label-for-checkbox', 'checkbox'),
-			        'input_class' => array('woocommerce-form__input', 'woocommerce-form__input-checkbox'),
-			        'required' => true,
-			        'label' => sprintf(
-			            __('I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>', 'yourpropfirm-checkout'),
-			            get_privacy_policy_url()
-			        ),
-			    ));
-
-			    // Display additional content if needed
-			    do_action('woocommerce_checkout_terms_and_conditions');
-			    do_action('woocommerce_checkout_privacy_policy_text');
-			    ?>
-			</div>
+		        // Privacy Policy checkbox
+		        woocommerce_form_field('privacy_policy', array(
+		            'type' => 'checkbox',
+		            'class' => array('form-row-wide', 'privacy-field'),
+		            'label_class' => array('woocommerce-form__label', 'woocommerce-form__label-for-checkbox', 'checkbox'),
+		            'input_class' => array('woocommerce-form__input', 'woocommerce-form__input-checkbox'),
+		            'required' => true,
+		            'label' => sprintf(
+		                __('I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>', 'yourpropfirm-checkout'),
+		                get_privacy_policy_url()
+		            ),
+		        ));
+		        ?>
+		    </div>
 
 	        <!-- Submit Button -->
 	        <button type="submit" id="ypf-submit-button"><?php esc_html_e('Proceed', 'yourpropfirm-checkout'); ?></button>
@@ -141,6 +137,28 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        jQuery(document).ready(function ($) {
 	            // Update form's target dynamically
 	            $('#ypf-billing-form').on('submit', function (e) {
+
+	            	// Get checkbox elements
+		        const termsCheckbox = $('#terms');
+		        const privacyCheckbox = $('#privacy_policy');
+		        
+		        // Check if both checkboxes are checked
+		        if (!termsCheckbox.is(':checked') || !privacyCheckbox.is(':checked')) {
+		            e.preventDefault(); // Prevent form submission
+		            
+		            // Show error messages
+		            if (!termsCheckbox.is(':checked')) {
+		                alert('Please accept the Terms and Conditions to proceed.');
+		            }
+		            if (!privacyCheckbox.is(':checked')) {
+		                alert('Please accept the Privacy Policy to proceed.');
+		            }
+		            
+		            return false;
+		        }
+		        
+		        return true; // Allow form submission if both are checked
+
 		            // Set form target to open in a new tab
 		            $(this).attr('target', '_blank');
 

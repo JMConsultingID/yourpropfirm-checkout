@@ -64,7 +64,10 @@ class Yourpropfirm_Checkout_Order_Handler {
 
             // Redirect to the order-pay page.
             $order = wc_get_order($order_id);
-            $order_pay_url = $order->get_checkout_payment_url(true);
+            $order_pay_url = add_query_arg(
+			    ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
+			    $order->get_checkout_payment_url()
+			);
 
             wp_redirect($order_pay_url);
             exit;

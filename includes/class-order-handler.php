@@ -58,14 +58,20 @@ class Yourpropfirm_Checkout_Order_Handler {
                 if (is_wp_error($coupon_validation)) {
                     // Display the error message from WooCommerce
                     wc_add_notice($coupon_validation->get_error_message(), 'error');
-                    wp_redirect(wp_get_referer());
+                   // Output JavaScript for redirection
+                    echo '<script type="text/javascript">
+                            window.location.href = "' . esc_url(wp_get_referer() ?: home_url('/order/')) . '";
+                          </script>';
                     exit;
                 }
 
                 // Check if the coupon was successfully applied
                 if (!WC()->cart->has_discount($coupon_code)) {
                     wc_add_notice(__('Invalid coupon code.', 'yourpropfirm-checkout'), 'error');
-                    wp_redirect(wp_get_referer());
+                    // Output JavaScript for redirection
+                    echo '<script type="text/javascript">
+                            window.location.href = "' . esc_url(wp_get_referer() ?: home_url('/order/')) . '";
+                          </script>';
                     exit;
                 }
 

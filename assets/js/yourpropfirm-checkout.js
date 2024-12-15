@@ -21,6 +21,8 @@
                 }
                 return false; // Stop further processing
             }
+             // Submit the form via AJAX or let PHP handle redirection
+            this.submit();
         });
 
         // Handle dynamic state selection or input

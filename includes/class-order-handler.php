@@ -151,12 +151,11 @@ class Yourpropfirm_Checkout_Order_Handler {
                 $order->set_customer_id(0); // Guest order.
             }
 
-            // Apply coupon(s) to the order
+            // Apply coupon(s) to the order.
             if (!empty(WC()->cart->get_applied_coupons())) {
                 foreach (WC()->cart->get_applied_coupons() as $coupon_code) {
                     $coupon = new WC_Coupon($coupon_code);
-                    $discount_total = $coupon->get_discount_amount();
-                    $order->add_discount($coupon_code, $discount_total);
+                    $order->apply_coupon($coupon);
                 }
             }
 

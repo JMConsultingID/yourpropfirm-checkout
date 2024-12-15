@@ -94,4 +94,9 @@ add_filter('woocommerce_locate_template', function ($template, $template_name, $
 }, 10, 3);
 
 
-add_filter('woocommerce_checkout_show_terms_and_conditions', '__return_false');
+add_filter( 'woocommerce_checkout_show_terms', '__return_false' );
+
+add_action( 'init', function() {
+    remove_action( 'woocommerce_checkout_terms_and_conditions', 'wc_checkout_privacy_policy_text', 20 );
+    remove_action( 'woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30 );
+});

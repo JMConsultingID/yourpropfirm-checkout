@@ -92,3 +92,6 @@ add_filter('woocommerce_locate_template', function ($template, $template_name, $
     // Return the original template if no override
     return $template;
 }, 10, 3);
+
+
+add_filter('woocommerce_checkout_show_terms_and_conditions', '__return_false');

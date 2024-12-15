@@ -98,6 +98,17 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        <label for="postal_code"><?php esc_html_e('Postal Code', 'yourpropfirm-checkout'); ?></label>
 	        <input type="text" name="postal_code" id="postal_code" required>
 
+	        <!-- Terms and Conditions -->
+	        <div class="terms-and-conditions">
+	            <input type="checkbox" id="terms_conditions" name="terms_conditions" required>
+	            <label for="terms_conditions">
+	                <?php printf(
+	                    __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
+	                    esc_url(get_permalink(wc_get_page_id('terms')))
+	                ); ?>
+	            </label>
+	        </div>
+
 	        <!-- Submit Button -->
 	        <button type="submit" id="ypf-submit-button"><?php esc_html_e('Proceed', 'yourpropfirm-checkout'); ?></button>
 	    </form>

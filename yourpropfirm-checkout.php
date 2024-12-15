@@ -60,6 +60,7 @@ class Yourpropfirm_Checkout {
         require_once YPF_CHECKOUT_DIR . 'includes/class-order-handler.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-shortcodes.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-redirects.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-single-product-checkout.php';
     }
 
     /**
@@ -67,6 +68,7 @@ class Yourpropfirm_Checkout {
      */
     private function init() {
         // Instantiate the classes.
+        new YourPropfirm_Single_Product_Checkout();
         new Yourpropfirm_Checkout_Order_Handler();
         new Yourpropfirm_Checkout_Shortcodes();
         new Yourpropfirm_Checkout_Redirects();

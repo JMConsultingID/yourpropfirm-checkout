@@ -62,7 +62,7 @@ class Yourpropfirm_Checkout_Order_Handler {
 
                 // Check if the coupon was successfully applied
                 if (!WC()->cart->has_discount($coupon_code)) {
-                    wc_add_notice(__('Invalid coupon code. Please try again.', 'yourpropfirm-checkout'), 'error');
+                    wc_add_notice(__('Invalid coupon code.', 'yourpropfirm-checkout'), 'error');
                 }
 
                 // Add a success message

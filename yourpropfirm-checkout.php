@@ -28,6 +28,18 @@ define('YPF_CHECKOUT_VERSION', '1.0');
 define('YPF_CHECKOUT_DIR', plugin_dir_path(__FILE__));
 define('YPF_CHECKOUT_URL', plugin_dir_url(__FILE__));
 
+// Load custom form-pay template from the plugin
+add_filter('woocommerce_locate_template', function ($template, $template_name, $template_path) {
+    if ($template_name === 'checkout/form-pay.php') {
+        $custom_template = YPF_CHECKOUT_DIR . 'templates/checkout/form-pay.php';
+        if (file_exists($custom_template)) {
+            return $custom_template;
+        }
+    }
+    return $template;
+}, 10, 3);
+
+
 /**
  * Initialize the plugin.
  */

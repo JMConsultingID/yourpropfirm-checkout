@@ -25,7 +25,7 @@ class Yourpropfirm_Checkout_Order_Handler {
     public function __construct() {
         add_action('init', [$this, 'handle_form_submission']);
         // Clear WooCommerce notices on the order-pay page
-        // add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
+        add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
     }
 
     /**
@@ -100,34 +100,17 @@ class Yourpropfirm_Checkout_Order_Handler {
      */
     private function create_wc_order($data) {
 	    try {
-	        // Step 1: Check if the customer already exists
-	        $customer_id = email_exists($data['email']); // Check if email is registered
-	        if (!$customer_id) {
-	            // Step 2: Create a new customer if it doesn't exist
-	            $random_password = wp_generate_password(); // Generate a random password
-	            $username = sanitize_user(current(explode('@', $data['email']))); // Use the part before "@" as username
-
-	            $customer_id = wc_create_new_customer($data['email'], $username, $random_password);
-
-	            if (is_wp_error($customer_id)) {
-	                throw new Exception(__('Unable to create customer: ', 'yourpropfirm-checkout') . $customer_id->get_error_message());
-	            }
-
-	            // Optionally send an email to the new customer with their account credentials
-	            wp_new_user_notification($customer_id, null, 'both');
-	        }
-
-	        // Step 3: Initialize the WooCommerce order
+	        // Initialize WooCommerce order.
 	        $order = wc_create_order();
 
-	        // Step 4: Add cart items to the order
+	        // Add cart items to the order.
 	        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
 	            $product = $cart_item['data'];
 	            $quantity = $cart_item['quantity'];
 	            $order->add_product($product, $quantity);
 	        }
 
-	        // Step 5: Set billing fields
+	        // Set billing fields.
 	        $order->set_billing_first_name($data['first_name']);
 	        $order->set_billing_last_name($data['last_name']);
 	        $order->set_billing_email($data['email']);
@@ -138,17 +121,20 @@ class Yourpropfirm_Checkout_Order_Handler {
 	        $order->set_billing_country($data['country']);
 	        $order->set_billing_state($data['state']);
 
-	        // Step 6: Attach the order to the customer
-	        $order->set_customer_id($customer_id);
+	        // Attach the order to the logged-in customer (if logged in).
+	        if (is_user_logged_in()) {
+	            $user_id = get_current_user_id();
+	            $order->set_customer_id($user_id);
+	        } 
 
-	        // Step 7: Set order status to pending payment
+	        // Set order status to pending payment.
 	        $order->set_status('pending');
 
-	        // Step 8: Calculate totals and save the order
+	        // Calculate totals and save order.
 	        $order->calculate_totals();
 	        $order->save();
 
-	        // Step 9: Clear the WooCommerce cart
+	        // Clear the WooCommerce cart.
 	        WC()->cart->empty_cart();
 
 	        return $order->get_id();
@@ -156,4 +142,5 @@ class Yourpropfirm_Checkout_Order_Handler {
 	        return new WP_Error('order_error', $e->getMessage());
 	    }
 	}
+
 }

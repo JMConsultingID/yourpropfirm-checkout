@@ -207,6 +207,29 @@ class Yourpropfirm_Checkout_Order_Handler {
                 $order->set_customer_id(0); // Guest order.
             }
 
+            // Apply coupon(s) to the order.
+            if (!empty(WC()->cart->get_applied_coupons())) {
+                foreach (WC()->cart->get_applied_coupons() as $coupon_code) {
+                    $coupon = new WC_Coupon($coupon_code);
+                    $order->apply_coupon($coupon);
+                }
+            }
+
+            // Calculate totals and save order.
+            $order->calculate_totals();
+
+            // Check if the total is 0
+            if ($order->get_total() == 0) {
+                // Mark the order as completed and redirect to the Thank You page
+                $order->set_status('completed');
+                $order->save();
+
+                // Redirect to the Thank You page
+                $thank_you_url = wc_get_endpoint_url('order-received', $order->get_id(), wc_get_checkout_url());
+                wp_redirect($thank_you_url);
+                exit;
+            }
+
             // If total is not 0, set the order status to pending payment
             $order->set_status('pending');
             $order->save();

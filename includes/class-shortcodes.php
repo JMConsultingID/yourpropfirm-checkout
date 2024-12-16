@@ -202,15 +202,18 @@ class Yourpropfirm_Checkout_Shortcodes {
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your postal code.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
-		        <!-- Coupon Code -->
-		        <div class="col-12">
-		            <label for="coupon_code" class="form-label"><?php esc_html_e('Coupon Code', 'yourpropfirm-checkout'); ?></label>
-		            <input type="text" name="coupon_code" id="coupon_code" class="form-control" placeholder="<?php esc_html_e('Enter Coupon Code', 'yourpropfirm-checkout'); ?>">
-		        </div>
+		        
 
 		        <div class="d-flex justify-content-center my-4">
 				    <div class="card text-white bg-dark p-3 shadow-sm">
 				        <div class="card-body">
+				        	<!-- Coupon Code -->
+					        <div class="col-12">
+					            <label for="coupon_code" class="form-label"><?php esc_html_e('Coupon Code', 'yourpropfirm-checkout'); ?></label>
+					            <input type="text" name="coupon_code" id="coupon_code" class="form-control" placeholder="<?php esc_html_e('Enter Coupon Code', 'yourpropfirm-checkout'); ?>">
+					        </div>
+
+
 				            <h5 class="card-title text-center mb-4"><?php esc_html_e('Agreement', 'yourpropfirm-checkout'); ?></h5>
 				            
 				            <!-- Terms and Conditions -->
@@ -240,15 +243,17 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                    <?php esc_html_e('You must agree to the privacy policy.', 'yourpropfirm-checkout'); ?>
 				                </div>
 				            </div>
+
+				            <!-- Submit Button -->
+					        <div class="col-12 text-center">
+					            <button type="submit" id="ypf-submit-button" class="btn btn-primary mt-4"><?php esc_html_e('Proceed With Payment', 'yourpropfirm-checkout'); ?></button>
+					        </div>
 				        </div>
 				    </div>
 				</div>
 
 
-		        <!-- Submit Button -->
-		        <div class="col-12 text-center">
-		            <button type="submit" id="ypf-submit-button" class="btn btn-primary mt-4"><?php esc_html_e('Proceed With Payment', 'yourpropfirm-checkout'); ?></button>
-		        </div>
+		        
 		    </div>
 		</form>
 

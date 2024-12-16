@@ -208,33 +208,42 @@ class Yourpropfirm_Checkout_Shortcodes {
 		            <input type="text" name="coupon_code" id="coupon_code" class="form-control" placeholder="<?php esc_html_e('Enter Coupon Code', 'yourpropfirm-checkout'); ?>">
 		        </div>
 
-		        <!-- Terms and Conditions -->
-			    <div class="form-check mb-2">
-			        <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
-			        <label class="form-check-label" for="terms">
-			            <?php printf(
-			                __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
-			                esc_url(get_permalink(wc_get_page_id('terms')))
-			            ); ?>
-			        </label>
-			        <div class="invalid-feedback">
-			            <?php esc_html_e('You must agree to the terms and conditions.', 'yourpropfirm-checkout'); ?>
-			        </div>
-			    </div>
+		        <div class="d-flex justify-content-center my-4">
+				    <div class="card p-3 shadow-sm" style="max-width: 600px; width: 100%;">
+				        <div class="card-body">
+				            <h5 class="card-title text-center mb-4"><?php esc_html_e('Agreement', 'yourpropfirm-checkout'); ?></h5>
+				            
+				            <!-- Terms and Conditions -->
+				            <div class="form-check mb-3">
+				                <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
+				                <label class="form-check-label" for="terms">
+				                    <?php printf(
+				                        __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
+				                        esc_url(get_permalink(wc_get_page_id('terms')))
+				                    ); ?>
+				                </label>
+				                <div class="invalid-feedback">
+				                    <?php esc_html_e('You must agree to the terms and conditions.', 'yourpropfirm-checkout'); ?>
+				                </div>
+				            </div>
 
-			    <!-- Privacy Policy -->
-			    <div class="form-check">
-			        <input class="form-check-input" type="checkbox" name="privacy_policy" id="privacy_policy" required>
-			        <label class="form-check-label" for="privacy_policy">
-			            <?php printf(
-			                __('I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>', 'yourpropfirm-checkout'),
-			                esc_url(get_privacy_policy_url())
-			            ); ?>
-			        </label>
-			        <div class="invalid-feedback">
-			            <?php esc_html_e('You must agree to the privacy policy.', 'yourpropfirm-checkout'); ?>
-			        </div>
-			    </div>
+				            <!-- Privacy Policy -->
+				            <div class="form-check">
+				                <input class="form-check-input" type="checkbox" name="privacy_policy" id="privacy_policy" required>
+				                <label class="form-check-label" for="privacy_policy">
+				                    <?php printf(
+				                        __('I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>', 'yourpropfirm-checkout'),
+				                        esc_url(get_privacy_policy_url())
+				                    ); ?>
+				                </label>
+				                <div class="invalid-feedback">
+				                    <?php esc_html_e('You must agree to the privacy policy.', 'yourpropfirm-checkout'); ?>
+				                </div>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+
 
 		        <!-- Submit Button -->
 		        <div class="col-12 text-center">

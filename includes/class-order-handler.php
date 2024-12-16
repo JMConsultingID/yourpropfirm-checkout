@@ -182,15 +182,17 @@ class Yourpropfirm_Checkout_Order_Handler {
      */
     private function create_wc_order($data) {
         try {
+            // Initialize WooCommerce order.
             $order = wc_create_order();
 
+            // Add cart items to the order.
             foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
                 $product = $cart_item['data'];
                 $quantity = $cart_item['quantity'];
                 $order->add_product($product, $quantity);
             }
 
-            // Set billing fields
+            // Set billing fields.
             $order->set_billing_first_name($data['first_name']);
             $order->set_billing_last_name($data['last_name']);
             $order->set_billing_email($data['email']);
@@ -201,24 +203,19 @@ class Yourpropfirm_Checkout_Order_Handler {
             $order->set_billing_country($data['country']);
             $order->set_billing_state($data['state']);
 
+            // Attach the order to the logged-in customer (if logged in).
             if (is_user_logged_in()) {
-                $order->set_customer_id(get_current_user_id());
+                $user_id = get_current_user_id();
+                $order->set_customer_id($user_id);
             } else {
-                $order->set_customer_id(0);
+                $order->set_customer_id(0); // Guest order.
             }
 
-            // Apply coupons
-            if (!empty(WC()->cart->get_applied_coupons())) {
-                foreach (WC()->cart->get_applied_coupons() as $coupon_code) {
-                    $coupon = new WC_Coupon($coupon_code);
-                    $order->apply_coupon($coupon);
-                }
-            }
-
-            $order->calculate_totals();
+            // If total is not 0, set the order status to pending payment
+            $order->set_status('pending');
             $order->save();
 
-            // Clear cart after successful order creation
+            // Clear the WooCommerce cart.
             WC()->cart->empty_cart();
 
             return $order->get_id();

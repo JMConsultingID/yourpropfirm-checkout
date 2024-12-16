@@ -2,6 +2,19 @@
     'use strict';
 
     jQuery(document).ready(function($) {
+        // Bootstrap validation
+        const form = document.querySelector('#ypf-billing-form');
+
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault(); // Prevent form submission
+                event.stopPropagation(); // Stop bubbling
+            }
+
+            // Add Bootstrap validation class
+            form.classList.add('was-validated');
+        }, false);
+        
         // Handle form submission
         $('#ypf-billing-form').on('submit', function(e) {
             e.preventDefault(); // Prevent default submission to ensure proper handling

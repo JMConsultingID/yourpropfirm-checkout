@@ -214,7 +214,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 					        </div>
          
 				             <!-- Terms and Conditions -->
-				            <div class="mb-3 text-center">
+				            <div class="mt-4 mb-3 text-center">
 				                <div class="form-check d-flex justify-content-center align-items-center">
 				                    <input class="form-check-input me-2" type="checkbox" name="terms" id="terms" required>
 				                    <label class="form-check-label mb-0" for="terms">

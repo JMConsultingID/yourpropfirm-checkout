@@ -55,6 +55,9 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        'select_state_text' => __('Select State', 'yourpropfirm-checkout'),
 	        'enter_state_text'  => __('Enter State/Region', 'yourpropfirm-checkout'), // For text input placeholder
 	        'no_states_text'    => __('No states available', 'yourpropfirm-checkout'),
+	        'ajax_url' 			=> admin_url('admin-ajax.php'),
+            'checkout_nonce' 	=> wp_create_nonce('ypf_checkout_nonce'),
+            'order_page_url' 	=> get_permalink(get_page_by_path('order'))
 	    ]);
 	}
 

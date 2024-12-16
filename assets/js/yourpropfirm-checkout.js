@@ -2,48 +2,51 @@
     'use strict';
 
     jQuery(document).ready(function($) {
-       // Handle form submission
-        $('#ypf-billing-form').on('submit', function (e) {
-            const form = this;
+        const form = $('#ypf-billing-form');
+        const submitButton = $('#ypf-submit-button');
 
-            // Bootstrap validation: Check form validity
-            if (!form.checkValidity()) {
-                e.preventDefault(); // Prevent submission if form is invalid
-                e.stopPropagation(); // Stop further event propagation
-                form.classList.add('was-validated'); // Add Bootstrap validation class
-                return false;
-            }
+        form.on('submit', function(e) {
+            e.preventDefault();
 
-            // Custom validation: Terms and Privacy Policy checkboxes
-            const termsCheckbox = $('#terms');
-            const privacyCheckbox = $('#privacy_policy');
-
-            if (!termsCheckbox.is(':checked') || !privacyCheckbox.is(':checked')) {
-                e.preventDefault(); // Prevent submission
+            if (!form[0].checkValidity()) {
                 e.stopPropagation();
-
-                // Show error messages for unchecked checkboxes
-                if (!termsCheckbox.is(':checked')) {
-                    alert('Please accept the Terms and Conditions to proceed.');
-                }
-                if (!privacyCheckbox.is(':checked')) {
-                    alert('Please accept the Privacy Policy to proceed.');
-                }
-
-                return false;
+                form.addClass('was-validated');
+                return;
             }
 
-            // If all validations pass, set target to open in a new tab
-            $(this).attr('target', '_blank');
+            submitButton.prop('disabled', true);
+            
+            const formData = new FormData(this);
+            formData.append('action', 'ypf_process_checkout');
+            formData.append('nonce', ypf_data.checkout_nonce);
 
-            // Perform delayed actions in the current tab
-            setTimeout(function () {
-                // Clear all form fields
-                $('#ypf-billing-form').find('input, select').val('');
-
-                // Redirect to the home page in the current tab
-                window.location.href = ypf_data.home_url;
-            }, 2000); // 2-second delay
+            $.ajax({
+                url: ypf_data.ajax_url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Open payment page in new tab
+                        window.open(response.redirect, '_blank');
+                        
+                        // Clear form and redirect current page after delay
+                        setTimeout(function() {
+                            form[0].reset();
+                            window.location.href = ypf_data.order_page_url;
+                        }, 2000);
+                    } else {
+                        // Show error message and redirect
+                        alert(response.message || 'An error occurred. Please try again.');
+                        window.location.href = ypf_data.order_page_url;
+                    }
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                    submitButton.prop('disabled', false);
+                }
+            });
         });
 
         // Handle dynamic state selection or input

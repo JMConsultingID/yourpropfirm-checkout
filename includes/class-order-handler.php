@@ -23,8 +23,8 @@ class Yourpropfirm_Checkout_Order_Handler {
      * Constructor: Hook into form submission handling.
      */
     public function __construct() {
-        add_action('init', [$this, 'handle_form_submission']);
-        // Clear WooCommerce notices on the order-pay page
+        add_action('wp_ajax_ypf_process_checkout', [$this, 'handle_form_submission']);
+        add_action('wp_ajax_nopriv_ypf_process_checkout', [$this, 'handle_form_submission']);
         add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
     }
 
@@ -32,79 +32,103 @@ class Yourpropfirm_Checkout_Order_Handler {
      * Handle form submission.
      */
     public function handle_form_submission() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['first_name']) && isset($_POST['email'])) {
-            // Verify WooCommerce cart is not empty.
-            if (WC()->cart->is_empty()) {
-                wc_add_notice(__('Your cart is empty. Please add a product to proceed.', 'yourpropfirm-checkout'), 'error');
-                wp_redirect(wc_get_cart_url());
-                exit;
-            }
+        check_ajax_referer('ypf_checkout_nonce', 'nonce');
 
-            // Check if Terms and Privacy Policy are accepted
-            if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
-                wc_add_notice(__('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout'), 'error');
-            }
+        $response = [
+            'success' => false,
+            'message' => '',
+            'redirect' => ''
+        ];
 
-            // Validate and apply coupon code if provided
-            if (!empty($_POST['coupon_code'])) {
-                $coupon_code = sanitize_text_field($_POST['coupon_code']);
-
-                // Check if the coupon is valid
-                $coupon = new WC_Coupon($coupon_code);
-                $coupon_validation = WC()->cart->apply_coupon($coupon_code);
-
-                if (is_wp_error($coupon_validation)) {
-                    // Display the error message from WooCommerce
-                    wc_add_notice($coupon_validation->get_error_message(), 'error');
-                }
-
-                // Check if the coupon was successfully applied
-                if (!WC()->cart->has_discount($coupon_code)) {
-                    wc_add_notice(__('Invalid coupon code.', 'yourpropfirm-checkout'), 'error');
-                }
-
-                // Add a success message
-                wc_add_notice(__('Coupon applied successfully!', 'yourpropfirm-checkout'), 'success');
-            }
-
-            // Verify required fields.
-            $required_fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'country', 'city', 'postal_code'];
-            foreach ($required_fields as $field) {
-                if (empty($_POST[$field])) {
-                    wc_add_notice(__('Please fill in all required fields.', 'yourpropfirm-checkout'), 'error');
-                }
-            }
-
-            // Sanitize form inputs.
-            $data = [
-                'first_name'   => sanitize_text_field($_POST['first_name']),
-                'last_name'    => sanitize_text_field($_POST['last_name']),
-                'email'        => sanitize_email($_POST['email']),
-                'phone'        => sanitize_text_field($_POST['phone']),
-                'address'      => sanitize_text_field($_POST['address']),
-                'country'      => sanitize_text_field($_POST['country']),
-                'state'        => isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '',
-                'city'         => sanitize_text_field($_POST['city']),
-                'postal_code'  => sanitize_text_field($_POST['postal_code']),
-            ];
-
-            // Create WooCommerce order.
-            $order_id = $this->create_wc_order($data);
-
-            if (is_wp_error($order_id)) {
-                wc_add_notice(__('Unable to create order. Please try again.', 'yourpropfirm-checkout'), 'error');
-            }
-
-            // Redirect to the order-pay page.
-            $order = wc_get_order($order_id);
-            $order_pay_url = add_query_arg(
-			    ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
-			    $order->get_checkout_payment_url()
-			);
-
-            wp_redirect($order_pay_url);
-            exit;
+        // Verify cart is not empty
+        if (WC()->cart->is_empty()) {
+            $response['message'] = __('Your cart is empty. Please add a product to proceed.', 'yourpropfirm-checkout');
+            wp_send_json($response);
+            return;
         }
+
+        // Check Terms and Privacy Policy
+        if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
+            $response['message'] = __('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout');
+            wp_send_json($response);
+            return;
+        }
+
+        // Handle coupon if provided
+        if (!empty($_POST['coupon_code'])) {
+            $coupon_code = sanitize_text_field($_POST['coupon_code']);
+            $coupon_result = $this->apply_coupon($coupon_code);
+            
+            if (is_wp_error($coupon_result)) {
+                $response['message'] = $coupon_result->get_error_message();
+                wp_send_json($response);
+                return;
+            }
+        }
+
+        // Verify required fields
+        $required_fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'country', 'city', 'postal_code'];
+        foreach ($required_fields as $field) {
+            if (empty($_POST[$field])) {
+                $response['message'] = __('Please fill in all required fields.', 'yourpropfirm-checkout');
+                wp_send_json($response);
+                return;
+            }
+        }
+
+        // Sanitize form data
+        $data = [
+            'first_name'   => sanitize_text_field($_POST['first_name']),
+            'last_name'    => sanitize_text_field($_POST['last_name']),
+            'email'        => sanitize_email($_POST['email']),
+            'phone'        => sanitize_text_field($_POST['phone']),
+            'address'      => sanitize_text_field($_POST['address']),
+            'country'      => sanitize_text_field($_POST['country']),
+            'state'        => isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '',
+            'city'         => sanitize_text_field($_POST['city']),
+            'postal_code'  => sanitize_text_field($_POST['postal_code']),
+        ];
+
+        // Create order
+        $order_id = $this->create_wc_order($data);
+
+        if (is_wp_error($order_id)) {
+            $response['message'] = $order_id->get_error_message();
+            wp_send_json($response);
+            return;
+        }
+
+        $order = wc_get_order($order_id);
+        
+        if ($order->get_total() == 0) {
+            $order->payment_complete();
+            $response['success'] = true;
+            $response['redirect'] = $order->get_checkout_order_received_url();
+        } else {
+            $response['success'] = true;
+            $response['redirect'] = add_query_arg(
+                ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
+                $order->get_checkout_payment_url()
+            );
+        }
+
+        wp_send_json($response);
+    }
+
+    private function apply_coupon($coupon_code) {
+        $coupon = new WC_Coupon($coupon_code);
+        
+        if (!$coupon->is_valid()) {
+            return new WP_Error('invalid_coupon', __('Invalid coupon code.', 'yourpropfirm-checkout'));
+        }
+
+        $result = WC()->cart->apply_coupon($coupon_code);
+        
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        return true;
     }
 
     /**

@@ -86,8 +86,8 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 	    <div class="ypf-cart-review mb-4">
 		    <h3 class="mb-3"><?php esc_html_e('Order Summary', 'yourpropfirm-checkout'); ?></h3>
-		    <table class="table table-bordered">
-		        <thead class="table-light">
+		    <table class="table text-white bg-dark table-bordered">
+		        <thead class="table-dark">
 		            <tr>
 		                <th><?php esc_html_e('Product', 'yourpropfirm-checkout'); ?></th>
 		                <th><?php esc_html_e('Subtotal', 'yourpropfirm-checkout'); ?></th>

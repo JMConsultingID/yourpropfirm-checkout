@@ -26,30 +26,53 @@ class Yourpropfirm_Checkout_Order_Handler {
         add_action('wp_ajax_ypf_process_checkout', [$this, 'handle_form_submission']);
         add_action('wp_ajax_nopriv_ypf_process_checkout', [$this, 'handle_form_submission']);
         add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
+        add_action('init', [$this, 'init_session']);
+    }
+
+    public function init_session() {
+        if (!is_admin() && !WC()->session) {
+            WC()->session = new WC_Session_Handler();
+            WC()->session->init();
+        }
     }
 
     /**
      * Handle form submission.
      */
-    public function handle_form_submission() {
+     public function handle_form_submission() {
         check_ajax_referer('ypf_checkout_nonce', 'nonce');
 
         $response = [
             'success' => false,
-            'message' => '',
             'redirect' => ''
         ];
 
+        // Store form data in session
+        $form_data = [
+            'first_name' => isset($_POST['first_name']) ? sanitize_text_field($_POST['first_name']) : '',
+            'last_name' => isset($_POST['last_name']) ? sanitize_text_field($_POST['last_name']) : '',
+            'email' => isset($_POST['email']) ? sanitize_email($_POST['email']) : '',
+            'phone' => isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '',
+            'address' => isset($_POST['address']) ? sanitize_text_field($_POST['address']) : '',
+            'country' => isset($_POST['country']) ? sanitize_text_field($_POST['country']) : '',
+            'state' => isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '',
+            'city' => isset($_POST['city']) ? sanitize_text_field($_POST['city']) : '',
+            'postal_code' => isset($_POST['postal_code']) ? sanitize_text_field($_POST['postal_code']) : '',
+        ];
+        
+        WC()->session->set('ypf_checkout_form_data', $form_data);
+
         // Verify cart is not empty
         if (WC()->cart->is_empty()) {
-            $response['message'] = __('Your cart is empty. Please add a product to proceed.', 'yourpropfirm-checkout');
+            wc_add_notice(__('Your cart is empty. Please add a product to proceed.', 'yourpropfirm-checkout'), 'error');
+            $response['redirect'] = wc_get_cart_url();
             wp_send_json($response);
             return;
         }
 
         // Check Terms and Privacy Policy
         if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
-            $response['message'] = __('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout');
+            wc_add_notice(__('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout'), 'error');
             wp_send_json($response);
             return;
         }
@@ -60,7 +83,7 @@ class Yourpropfirm_Checkout_Order_Handler {
             $coupon_result = $this->apply_coupon($coupon_code);
             
             if (is_wp_error($coupon_result)) {
-                $response['message'] = $coupon_result->get_error_message();
+                wc_add_notice($coupon_result->get_error_message(), 'error');
                 wp_send_json($response);
                 return;
             }
@@ -68,32 +91,24 @@ class Yourpropfirm_Checkout_Order_Handler {
 
         // Verify required fields
         $required_fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'country', 'city', 'postal_code'];
+        $missing_fields = false;
         foreach ($required_fields as $field) {
             if (empty($_POST[$field])) {
-                $response['message'] = __('Please fill in all required fields.', 'yourpropfirm-checkout');
-                wp_send_json($response);
-                return;
+                $missing_fields = true;
             }
         }
-
-        // Sanitize form data
-        $data = [
-            'first_name'   => sanitize_text_field($_POST['first_name']),
-            'last_name'    => sanitize_text_field($_POST['last_name']),
-            'email'        => sanitize_email($_POST['email']),
-            'phone'        => sanitize_text_field($_POST['phone']),
-            'address'      => sanitize_text_field($_POST['address']),
-            'country'      => sanitize_text_field($_POST['country']),
-            'state'        => isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '',
-            'city'         => sanitize_text_field($_POST['city']),
-            'postal_code'  => sanitize_text_field($_POST['postal_code']),
-        ];
+        
+        if ($missing_fields) {
+            wc_add_notice(__('Please fill in all required fields.', 'yourpropfirm-checkout'), 'error');
+            wp_send_json($response);
+            return;
+        }
 
         // Create order
-        $order_id = $this->create_wc_order($data);
+        $order_id = $this->create_wc_order($form_data);
 
         if (is_wp_error($order_id)) {
-            $response['message'] = $order_id->get_error_message();
+            wc_add_notice($order_id->get_error_message(), 'error');
             wp_send_json($response);
             return;
         }
@@ -104,13 +119,20 @@ class Yourpropfirm_Checkout_Order_Handler {
             $order->payment_complete();
             $response['success'] = true;
             $response['redirect'] = $order->get_checkout_order_received_url();
+            // Clear session data on success
+            WC()->session->set('ypf_checkout_form_data', null);
         } else {
             $response['success'] = true;
             $response['redirect'] = add_query_arg(
                 ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
                 $order->get_checkout_payment_url()
             );
+            // Clear session data on success
+            WC()->session->set('ypf_checkout_form_data', null);
         }
+
+        // Ensure notices are stored in session
+        WC()->session->set('wc_notices', wc_get_notices());
 
         wp_send_json($response);
     }

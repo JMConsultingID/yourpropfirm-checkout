@@ -76,11 +76,15 @@ class Yourpropfirm_Checkout_Shortcodes {
 		    echo '<script>window.location.href = "' . esc_url(wc_get_cart_url()) . '";</script>';
 		    exit;
 	    }
+	    // Get stored form data
+        $form_data = WC()->session->get('ypf_checkout_form_data', array());
+
 	    ob_start();
 	    // Display WooCommerce notices
 	    if (function_exists('wc_print_notices')) {
 	        wc_print_notices();
 	    }
+
 	    // WooCommerce country and state data
 	    $wc_countries = new WC_Countries();
 	    $countries = $wc_countries->get_countries();
@@ -138,45 +142,51 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        <!-- First Name -->
 		        <div class="col-md-6">
 		            <label for="first_name" class="form-label"><?php esc_html_e('First Name', 'yourpropfirm-checkout'); ?></label>
-		            <input type="text" name="first_name" id="first_name" class="form-control" required>
+		            <input type="text" name="first_name" id="first_name" class="form-control" value="<?php echo esc_attr($form_data['first_name'] ?? ''); ?>" required>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your first name.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
 		        <!-- Last Name -->
 		        <div class="col-md-6">
 		            <label for="last_name" class="form-label"><?php esc_html_e('Last Name', 'yourpropfirm-checkout'); ?></label>
-		            <input type="text" name="last_name" id="last_name" class="form-control" required>
+		            <input type="text" name="last_name" id="last_name" class="form-control" value="<?php echo esc_attr($form_data['last_name'] ?? ''); ?>" required>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your last name.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
 		        <!-- Email -->
 		        <div class="col-md-6">
 		            <label for="email" class="form-label"><?php esc_html_e('Email', 'yourpropfirm-checkout'); ?></label>
-		            <input type="email" name="email" id="email" class="form-control" required>
+		            <input type="email" name="email" id="email" class="form-control" value="<?php echo esc_attr($form_data['email'] ?? ''); ?>" required>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter a valid email address.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
 		        <!-- Phone -->
 		        <div class="col-md-6">
 		            <label for="phone" class="form-label"><?php esc_html_e('Phone Number', 'yourpropfirm-checkout'); ?></label>
-		            <input type="text" name="phone" id="phone" class="form-control" required>
+		            <input type="text" name="phone" id="phone" class="form-control" value="<?php echo esc_attr($form_data['phone'] ?? ''); ?>" required>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your phone number.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
 		        <!-- Address -->
 		        <div class="col-12">
 		            <label for="address" class="form-label"><?php esc_html_e('Address', 'yourpropfirm-checkout'); ?></label>
-		            <input type="text" name="address" id="address" class="form-control" required>
+		            <input type="text" name="address" id="address" class="form-control" value="<?php echo esc_attr($form_data['address'] ?? ''); ?>" required>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your address.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
 		        <!-- Country -->
 		        <div class="col-md-6">
 		            <label for="country" class="form-label"><?php esc_html_e('Country', 'yourpropfirm-checkout'); ?></label>
-		            <select name="country" id="country" class="form-select" required>
+		            <select name="country" id="country" class="form-select" value="<?php echo esc_attr($form_data['first_name'] ?? ''); ?>" required>
 		                <option value=""><?php esc_html_e('Select Country', 'yourpropfirm-checkout'); ?></option>
+		                <?php 
+		                $selected_country = $form_data['country'] ?? '';
+		                ?>
 		                <?php foreach ($countries as $code => $name) : ?>
-		                    <option value="<?php echo esc_attr($code); ?>"><?php echo esc_html($name); ?></option>
+		                    <option value="<?php echo esc_attr($code); ?>" 
+                            	<?php selected($selected_country, $code); ?>>
+		                        <?php echo esc_html($name); ?>
+		                    </option>
 		                <?php endforeach; ?>
 		            </select>
 		            <div class="invalid-feedback"><?php esc_html_e('Please select your country.', 'yourpropfirm-checkout'); ?></div>
@@ -186,7 +196,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        <div class="col-md-6">
 		            <label for="state" class="form-label"><?php esc_html_e('State/Region', 'yourpropfirm-checkout'); ?></label>
 		            <div id="state-container">
-		                <input type="text" name="state" id="state" class="form-control" required>
+		                <input type="text" name="state" id="state" class="form-control" value="<?php echo esc_attr($form_data['state'] ?? ''); ?>" required>
 		            </div>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your state/region.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
@@ -194,14 +204,14 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        <!-- City -->
 		        <div class="col-md-6">
 		            <label for="city" class="form-label"><?php esc_html_e('City', 'yourpropfirm-checkout'); ?></label>
-		            <input type="text" name="city" id="city" class="form-control" required>
+		            <input type="text" name="city" id="city" class="form-control" value="<?php echo esc_attr($form_data['city'] ?? ''); ?>" required>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your city.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
 		        <!-- Postal Code -->
 		        <div class="col-md-6">
 		            <label for="postal_code" class="form-label"><?php esc_html_e('Postal Code', 'yourpropfirm-checkout'); ?></label>
-		            <input type="text" name="postal_code" id="postal_code" class="form-control" required>
+		            <input type="text" name="postal_code" id="postal_code" class="form-control" value="<?php echo esc_attr($form_data['postal_code'] ?? ''); ?>" required>
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your postal code.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 

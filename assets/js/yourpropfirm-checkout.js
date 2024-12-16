@@ -29,13 +29,13 @@
                             window.location.href = ypf_data.order_page_url;
                         }, 2000);
                     } else {
-                        // Show error message and redirect
-                        alert(response.message || 'An error occurred. Please try again.');
-                        window.location.href = ypf_data.order_page_url;
+                        window.location.reload();
                     }
                 },
                 error: function() {
-                    alert('An error occurred. Please try again.');
+                    window.location.reload();
+                },
+                complete: function() {
                     submitButton.prop('disabled', false);
                 }
             });

@@ -111,37 +111,14 @@ class Yourpropfirm_Checkout_Order_Handler {
                 return;
             }
 
-            // Recalculate totals after applying coupon
-            WC()->cart->calculate_totals();
-
-            // If cart total is now 0, create and complete the order immediately
-            if (WC()->cart->get_total('edit') == 0) {
-                $order_id = $this->create_wc_order($form_data);
-                
-                if (is_wp_error($order_id)) {
-                    wc_add_notice($order_id->get_error_message(), 'error');
-                    wp_send_json($response);
-                    return;
-                }
-
-                $order = wc_get_order($order_id);
-                $order->payment_complete();
-                $order->update_status('completed');
-
-                // Clear session data
-                WC()->session->set('ypf_checkout_form_data', null);
-                WC()->cart->empty_cart();
-
-                $response['success'] = true;
-                $response['redirect'] = $order->get_checkout_order_received_url();
-                wp_send_json($response);
-                return;
-            }
-
+            // Only show success message for coupon
             wc_add_notice(__('Coupon applied successfully!', 'yourpropfirm-checkout'), 'success');
         }
 
-        // Continue with regular order creation for non-zero totals
+        // Calculate cart totals
+        WC()->cart->calculate_totals();
+
+        // Create order
         $order_id = $this->create_wc_order($form_data);
 
         if (is_wp_error($order_id)) {
@@ -152,22 +129,21 @@ class Yourpropfirm_Checkout_Order_Handler {
 
         $order = wc_get_order($order_id);
         
-        // Double check order total
+        // Clear session data
+        WC()->session->set('ypf_checkout_form_data', null);
+        
+        // Set response based on order total
+        $response['success'] = true;
         if ($order->get_total() == 0) {
             $order->payment_complete();
             $order->update_status('completed');
-            $response['success'] = true;
             $response['redirect'] = $order->get_checkout_order_received_url();
         } else {
-            $response['success'] = true;
             $response['redirect'] = add_query_arg(
                 ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
                 $order->get_checkout_payment_url()
             );
         }
-
-        // Clear session data on success
-        WC()->session->set('ypf_checkout_form_data', null);
         
         wp_send_json($response);
     }
@@ -206,17 +182,15 @@ class Yourpropfirm_Checkout_Order_Handler {
      */
     private function create_wc_order($data) {
         try {
-            // Initialize WooCommerce order.
             $order = wc_create_order();
 
-            // Add cart items to the order.
             foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
                 $product = $cart_item['data'];
                 $quantity = $cart_item['quantity'];
                 $order->add_product($product, $quantity);
             }
 
-            // Set billing fields.
+            // Set billing fields
             $order->set_billing_first_name($data['first_name']);
             $order->set_billing_last_name($data['last_name']);
             $order->set_billing_email($data['email']);
@@ -227,15 +201,13 @@ class Yourpropfirm_Checkout_Order_Handler {
             $order->set_billing_country($data['country']);
             $order->set_billing_state($data['state']);
 
-            // Attach the order to the logged-in customer (if logged in).
             if (is_user_logged_in()) {
-                $user_id = get_current_user_id();
-                $order->set_customer_id($user_id);
+                $order->set_customer_id(get_current_user_id());
             } else {
-                $order->set_customer_id(0); // Guest order.
+                $order->set_customer_id(0);
             }
 
-            // Apply coupon(s) to the order.
+            // Apply coupons
             if (!empty(WC()->cart->get_applied_coupons())) {
                 foreach (WC()->cart->get_applied_coupons() as $coupon_code) {
                     $coupon = new WC_Coupon($coupon_code);
@@ -243,26 +215,10 @@ class Yourpropfirm_Checkout_Order_Handler {
                 }
             }
 
-            // Calculate totals and save order.
             $order->calculate_totals();
-
-            // Check if the total is 0
-            if ($order->get_total() == 0) {
-                // Mark the order as completed and redirect to the Thank You page
-                $order->set_status('completed');
-                $order->save();
-
-                // Redirect to the Thank You page
-                $thank_you_url = wc_get_endpoint_url('order-received', $order->get_id(), wc_get_checkout_url());
-                wp_redirect($thank_you_url);
-                exit;
-            }
-
-            // If total is not 0, set the order status to pending payment
-            $order->set_status('pending');
             $order->save();
 
-            // Clear the WooCommerce cart.
+            // Clear cart after successful order creation
             WC()->cart->empty_cart();
 
             return $order->get_id();

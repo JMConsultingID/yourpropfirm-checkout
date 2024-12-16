@@ -14,6 +14,28 @@
                 return false;
             }
 
+            // Custom validation: Terms and Privacy Policy checkboxes
+            const termsCheckbox = $('#terms');
+            const privacyCheckbox = $('#privacy_policy');
+
+            if (!termsCheckbox.is(':checked') || !privacyCheckbox.is(':checked')) {
+                e.preventDefault(); // Prevent submission
+                e.stopPropagation();
+
+                // Show error messages for unchecked checkboxes
+                if (!termsCheckbox.is(':checked')) {
+                    alert('Please accept the Terms and Conditions to proceed.');
+                }
+                if (!privacyCheckbox.is(':checked')) {
+                    alert('Please accept the Privacy Policy to proceed.');
+                }
+
+                return false;
+            }
+
+            // If all validations pass, set target to open in a new tab
+            $(this).attr('target', '_blank');
+
             // Submit the form
             setTimeout(function () {
                 form.submit();

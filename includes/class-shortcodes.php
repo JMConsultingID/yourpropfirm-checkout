@@ -209,16 +209,32 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        </div>
 
 		        <!-- Terms and Conditions -->
-		        <div class="form-check mt-4">
-		            <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
-		            <label class="form-check-label" for="terms">
-		                <?php printf(
-		                    __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
-		                    esc_url(get_permalink(wc_get_page_id('terms')))
-		                ); ?>
-		            </label>
-		            <div class="invalid-feedback"><?php esc_html_e('You must agree to the terms and conditions.', 'yourpropfirm-checkout'); ?></div>
-		        </div>
+			    <div class="form-check mb-2">
+			        <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
+			        <label class="form-check-label" for="terms">
+			            <?php printf(
+			                __('I agree to the <a href="%s" target="_blank">Terms and Conditions</a>', 'yourpropfirm-checkout'),
+			                esc_url(get_permalink(wc_get_page_id('terms')))
+			            ); ?>
+			        </label>
+			        <div class="invalid-feedback">
+			            <?php esc_html_e('You must agree to the terms and conditions.', 'yourpropfirm-checkout'); ?>
+			        </div>
+			    </div>
+
+			    <!-- Privacy Policy -->
+			    <div class="form-check">
+			        <input class="form-check-input" type="checkbox" name="privacy_policy" id="privacy_policy" required>
+			        <label class="form-check-label" for="privacy_policy">
+			            <?php printf(
+			                __('I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>', 'yourpropfirm-checkout'),
+			                esc_url(get_privacy_policy_url())
+			            ); ?>
+			        </label>
+			        <div class="invalid-feedback">
+			            <?php esc_html_e('You must agree to the privacy policy.', 'yourpropfirm-checkout'); ?>
+			        </div>
+			    </div>
 
 		        <!-- Submit Button -->
 		        <div class="col-12 text-center">

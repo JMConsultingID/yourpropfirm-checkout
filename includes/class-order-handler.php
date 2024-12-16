@@ -138,21 +138,71 @@ class Yourpropfirm_Checkout_Order_Handler {
     }
 
     private function apply_coupon($coupon_code) {
-        $coupon = new WC_Coupon($coupon_code);
-        
-        if (!$coupon->is_valid()) {
-            return new WP_Error('invalid_coupon', __('Invalid coupon code.', 'yourpropfirm-checkout'));
+        try {
+            // Check if coupon code exists
+            $coupon = new WC_Coupon($coupon_code);
+            
+            // Check if coupon is already applied
+            if (WC()->cart->has_discount($coupon_code)) {
+                return new WP_Error(
+                    'coupon_already_applied',
+                    __('Coupon code already applied!', 'yourpropfirm-checkout')
+                );
+            }
+            
+            // Validate coupon
+            $valid = $coupon->is_valid();
+            
+            if (is_wp_error($valid)) {
+                return $valid; // Return WooCommerce's detailed error
+            }
+            
+            if (!$valid) {
+                // Check specific validation issues
+                if ($coupon->get_date_expires() && time() > $coupon->get_date_expires()->getTimestamp()) {
+                    return new WP_Error(
+                        'expired_coupon',
+                        __('This coupon has expired.', 'yourpropfirm-checkout')
+                    );
+                }
+                
+                if ($coupon->get_usage_limit() > 0 && $coupon->get_usage_count() >= $coupon->get_usage_limit()) {
+                    return new WP_Error(
+                        'usage_limit_reached',
+                        __('This coupon\'s usage limit has been reached.', 'yourpropfirm-checkout')
+                    );
+                }
+                
+                return new WP_Error(
+                    'invalid_coupon',
+                    __('Invalid coupon code.', 'yourpropfirm-checkout')
+                );
+            }
+            
+            // Apply the coupon
+            $result = WC()->cart->apply_coupon($coupon_code);
+            
+            if (is_wp_error($result)) {
+                return $result;
+            }
+            
+            // Add success message if everything worked
+            wc_add_notice(
+                sprintf(__('Coupon code "%s" applied successfully!', 'yourpropfirm-checkout'), 
+                esc_html($coupon_code)),
+                'success'
+            );
+            
+            return true;
+            
+        } catch (Exception $e) {
+            return new WP_Error(
+                'coupon_error',
+                __('Error applying coupon code.', 'yourpropfirm-checkout')
+            );
         }
-
-        $result = WC()->cart->apply_coupon($coupon_code);
-        
-        if (is_wp_error($result)) {
-            return $result;
-        }
-
-        return true;
     }
-
+    
     /**
      * Clear WooCommerce notices on the order-pay page.
      */

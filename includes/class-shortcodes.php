@@ -225,9 +225,9 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                    </label>
 				                </div>
 				                <!-- Validation Message -->
-				                <div class="invalid-feedback d-block mt-1">
+				                <div class="invalid-feedback text-center">
 				                    <?php esc_html_e('You must agree to the terms and conditions.', 'yourpropfirm-checkout'); ?>
-				                </div>
+					                </div>
 				            </div>
 
 				            <!-- Privacy Policy -->
@@ -242,7 +242,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                    </label>
 				                </div>
 				                <!-- Validation Message -->
-				                <div class="invalid-feedback d-block mt-1">
+				                <div class="invalid-feedback text-center">
 				                    <?php esc_html_e('You must agree to the privacy policy.', 'yourpropfirm-checkout'); ?>
 				                </div>
 				            </div>

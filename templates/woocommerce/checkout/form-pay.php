@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 
 $totals = $order->get_order_item_totals(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 ?>
-<form id="order_review forfxorg" method="post">
+<form id="order_review" class="forfxorg-review" method="post">
 
 	<table class="shop_table">
 		<thead>
@@ -76,7 +76,7 @@ $totals = $order->get_order_item_totals(); // phpcs:ignore WordPress.WP.GlobalVa
 	do_action( 'woocommerce_pay_order_before_payment' ); 
 	?>
 
-	<div id="payment">
+	<div id="payment" class="forfxorg-payment">
 		<?php if ( $order->needs_payment() ) : ?>
 			<ul class="wc_payment_methods payment_methods methods">
 				<?php

@@ -47,7 +47,7 @@ class Yourpropfirm_Checkout_Order_Handler {
             'redirect' => ''
         ];
 
-        // Store form data in session
+        // Store form data
         $form_data = [
             'first_name' => isset($_POST['first_name']) ? sanitize_text_field($_POST['first_name']) : '',
             'last_name' => isset($_POST['last_name']) ? sanitize_text_field($_POST['last_name']) : '',
@@ -70,23 +70,34 @@ class Yourpropfirm_Checkout_Order_Handler {
             return;
         }
 
+        // Handle coupon if provided
+        if (!empty($_POST['coupon_code'])) {
+            $coupon_code = sanitize_text_field($_POST['coupon_code']);
+            $coupon = new WC_Coupon($coupon_code);
+            
+            if (!$coupon->is_valid()) {
+                wc_add_notice(__('Invalid coupon code.', 'yourpropfirm-checkout'), 'error');
+                wp_send_json($response);
+                return;
+            }
+
+            $result = WC()->cart->apply_coupon($coupon_code);
+            
+            if (is_wp_error($result)) {
+                wc_add_notice($result->get_error_message(), 'error');
+                wp_send_json($response);
+                return;
+            }
+
+            // If coupon is valid, add success message and continue with order creation
+            wc_add_notice(__('Coupon applied successfully!', 'yourpropfirm-checkout'), 'success');
+        }
+
         // Check Terms and Privacy Policy
         if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
             wc_add_notice(__('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout'), 'error');
             wp_send_json($response);
             return;
-        }
-
-        // Handle coupon if provided
-        if (!empty($_POST['coupon_code'])) {
-            $coupon_code = sanitize_text_field($_POST['coupon_code']);
-            $coupon_result = $this->apply_coupon($coupon_code);
-            
-            if (is_wp_error($coupon_result)) {
-                wc_add_notice($coupon_result->get_error_message(), 'error');
-                wp_send_json($response);
-                return;
-            }
         }
 
         // Verify required fields
@@ -119,21 +130,17 @@ class Yourpropfirm_Checkout_Order_Handler {
             $order->payment_complete();
             $response['success'] = true;
             $response['redirect'] = $order->get_checkout_order_received_url();
-            // Clear session data on success
-            WC()->session->set('ypf_checkout_form_data', null);
         } else {
             $response['success'] = true;
             $response['redirect'] = add_query_arg(
                 ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
                 $order->get_checkout_payment_url()
             );
-            // Clear session data on success
-            WC()->session->set('ypf_checkout_form_data', null);
         }
 
-        // Ensure notices are stored in session
-        WC()->session->set('wc_notices', wc_get_notices());
-
+        // Clear session data on success
+        WC()->session->set('ypf_checkout_form_data', null);
+        
         wp_send_json($response);
     }
 

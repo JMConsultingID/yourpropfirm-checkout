@@ -216,30 +216,31 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 				            <h5 class="card-title text-center mb-4"><?php esc_html_e('Agreement', 'yourpropfirm-checkout'); ?></h5>
 				            
+				            
 				            <!-- Terms and Conditions -->
-				            <div class="form-check mb-3">
-				                <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
-				                <label class="form-check-label" for="terms">
+				            <div class="form-check d-flex align-items-center justify-content-center mb-3">
+				                <input class="form-check-input me-2" type="checkbox" name="terms" id="terms" required>
+				                <label class="form-check-label mb-0" for="terms">
 				                    <?php printf(
 				                        __('I agree to the <a href="%s" target="_blank" class="text-warning">Terms and Conditions</a>', 'yourpropfirm-checkout'),
 				                        esc_url(get_permalink(wc_get_page_id('terms')))
 				                    ); ?>
 				                </label>
-				                <div class="invalid-feedback">
+				                <div class="invalid-feedback text-center">
 				                    <?php esc_html_e('You must agree to the terms and conditions.', 'yourpropfirm-checkout'); ?>
 				                </div>
 				            </div>
 
 				            <!-- Privacy Policy -->
-				            <div class="form-check">
-				                <input class="form-check-input" type="checkbox" name="privacy_policy" id="privacy_policy" required>
-				                <label class="form-check-label" for="privacy_policy">
+				            <div class="form-check d-flex align-items-center justify-content-center mb-3">
+				                <input class="form-check-input me-2" type="checkbox" name="privacy_policy" id="privacy_policy" required>
+				                <label class="form-check-label mb-0" for="privacy_policy">
 				                    <?php printf(
 				                        __('I have read and agree to the <a href="%s" target="_blank" class="text-warning">Privacy Policy</a>', 'yourpropfirm-checkout'),
 				                        esc_url(get_privacy_policy_url())
 				                    ); ?>
 				                </label>
-				                <div class="invalid-feedback">
+				                <div class="invalid-feedback text-center">
 				                    <?php esc_html_e('You must agree to the privacy policy.', 'yourpropfirm-checkout'); ?>
 				                </div>
 				            </div>

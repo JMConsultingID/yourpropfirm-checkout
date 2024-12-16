@@ -70,6 +70,28 @@ class Yourpropfirm_Checkout_Order_Handler {
             return;
         }
 
+        // Verify required fields first
+        $required_fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'country', 'city', 'postal_code'];
+        $missing_fields = false;
+        foreach ($required_fields as $field) {
+            if (empty($_POST[$field])) {
+                $missing_fields = true;
+            }
+        }
+        
+        if ($missing_fields) {
+            wc_add_notice(__('Please fill in all required fields.', 'yourpropfirm-checkout'), 'error');
+            wp_send_json($response);
+            return;
+        }
+
+        // Check Terms and Privacy Policy
+        if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
+            wc_add_notice(__('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout'), 'error');
+            wp_send_json($response);
+            return;
+        }
+
         // Handle coupon if provided
         if (!empty($_POST['coupon_code'])) {
             $coupon_code = sanitize_text_field($_POST['coupon_code']);
@@ -89,33 +111,37 @@ class Yourpropfirm_Checkout_Order_Handler {
                 return;
             }
 
-            // If coupon is valid, add success message and continue with order creation
+            // Recalculate totals after applying coupon
+            WC()->cart->calculate_totals();
+
+            // If cart total is now 0, create and complete the order immediately
+            if (WC()->cart->get_total('edit') == 0) {
+                $order_id = $this->create_wc_order($form_data);
+                
+                if (is_wp_error($order_id)) {
+                    wc_add_notice($order_id->get_error_message(), 'error');
+                    wp_send_json($response);
+                    return;
+                }
+
+                $order = wc_get_order($order_id);
+                $order->payment_complete();
+                $order->update_status('completed');
+
+                // Clear session data
+                WC()->session->set('ypf_checkout_form_data', null);
+                WC()->cart->empty_cart();
+
+                $response['success'] = true;
+                $response['redirect'] = $order->get_checkout_order_received_url();
+                wp_send_json($response);
+                return;
+            }
+
             wc_add_notice(__('Coupon applied successfully!', 'yourpropfirm-checkout'), 'success');
         }
 
-        // Check Terms and Privacy Policy
-        if (empty($_POST['terms']) || empty($_POST['privacy_policy'])) {
-            wc_add_notice(__('Please accept the Terms and Conditions and Privacy Policy to proceed.', 'yourpropfirm-checkout'), 'error');
-            wp_send_json($response);
-            return;
-        }
-
-        // Verify required fields
-        $required_fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'country', 'city', 'postal_code'];
-        $missing_fields = false;
-        foreach ($required_fields as $field) {
-            if (empty($_POST[$field])) {
-                $missing_fields = true;
-            }
-        }
-        
-        if ($missing_fields) {
-            wc_add_notice(__('Please fill in all required fields.', 'yourpropfirm-checkout'), 'error');
-            wp_send_json($response);
-            return;
-        }
-
-        // Create order
+        // Continue with regular order creation for non-zero totals
         $order_id = $this->create_wc_order($form_data);
 
         if (is_wp_error($order_id)) {
@@ -126,8 +152,10 @@ class Yourpropfirm_Checkout_Order_Handler {
 
         $order = wc_get_order($order_id);
         
+        // Double check order total
         if ($order->get_total() == 0) {
             $order->payment_complete();
+            $order->update_status('completed');
             $response['success'] = true;
             $response['redirect'] = $order->get_checkout_order_received_url();
         } else {

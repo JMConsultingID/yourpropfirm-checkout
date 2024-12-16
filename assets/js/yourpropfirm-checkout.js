@@ -36,10 +36,14 @@
             // If all validations pass, set target to open in a new tab
             $(this).attr('target', '_blank');
 
-            // Submit the form
+            // Perform delayed actions in the current tab
             setTimeout(function () {
-                form.submit();
-            }, 2000); // Add delay before submission if needed
+                // Clear all form fields
+                $('#ypf-billing-form').find('input, select').val('');
+
+                // Redirect to the home page in the current tab
+                window.location.href = ypf_data.home_url;
+            }, 2000); // 2-second delay
         });
 
         // Handle dynamic state selection or input

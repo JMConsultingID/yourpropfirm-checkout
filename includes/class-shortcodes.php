@@ -204,7 +204,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 		        
 
-		        <div class="d-flex justify-content-center my-4">
+		        <div class="d-flex justify-content-center my-4 col-sm-8">
 				    <div class="card text-white bg-dark p-3 shadow-sm">
 				        <div class="card-body">
 				        	<!-- Coupon Code -->

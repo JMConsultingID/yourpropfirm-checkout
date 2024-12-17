@@ -7,14 +7,6 @@
 
         form.on('submit', function(e) {
             e.preventDefault();
-
-            if (!form[0].checkValidity()) {
-                e.stopPropagation();
-                form.addClass('was-validated');
-                return;
-            }
-
-            submitButton.prop('disabled', true);
             
             const formData = new FormData(this);
             formData.append('action', 'ypf_process_checkout');

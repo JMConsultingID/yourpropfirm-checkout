@@ -49,8 +49,9 @@
 
         // Handle dynamic state selection or input
         const savedState = ypf_data.saved_state;
+        const savedCountry = $('#country').val(); // Get the pre-selected country
         
-        function updateStateField() {
+        function updateStateField(initialLoad = false) {
             const country = $('#country').val();
             const states = ypf_data.states;
             const container = $('#state-container');
@@ -79,8 +80,8 @@
                         text: name
                     });
                     
-                    // Select the saved state if it matches
-                    if (savedState === code) {
+                    // Select the saved state if it matches and we're handling the same country
+                    if (savedState === code && (initialLoad || country === savedCountry)) {
                         option.prop('selected', true);
                     }
                     
@@ -97,23 +98,32 @@
                     class: 'form-control',
                     required: true,
                     placeholder: ypf_data.enter_state_text,
-                    value: savedState // Set the saved state value
+                    // Only set the value if we're handling the same country or initial load
+                    value: (initialLoad || country === savedCountry) ? savedState : ''
                 });
                 
                 container.append(input);
             }
+
+            // Add bootstrap classes
+            $('#state').addClass('form-control');
         }
 
         // Handle country change
         $('#country').on('change', function() {
-            updateStateField();
+            updateStateField(false);
         });
 
-        // Initialize state field on page load
-        // Small delay to ensure country selection is properly set
-        setTimeout(function() {
-            updateStateField();
-        }, 100);
+        // Initialize state field if there's a saved country
+        if (savedCountry) {
+            // Use a very small delay to ensure the DOM is ready
+            setTimeout(function() {
+                updateStateField(true);
+            }, 10);
+        } else {
+            // If no saved country, just trigger the change event
+            $('#country').trigger('change');
+        }
     });
 
 })( jQuery );

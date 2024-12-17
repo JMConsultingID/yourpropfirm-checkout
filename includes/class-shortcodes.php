@@ -28,6 +28,8 @@ class Yourpropfirm_Checkout_Shortcodes {
      * Enqueue CSS and JS for the billing form.
      */
     public function enqueue_assets() {
+    	$form_data = WC()->session->get('ypf_checkout_form_data', array());
+
 	    // Enqueue custom plugin styles
 	    wp_enqueue_style('ypf-checkout-css', YPF_CHECKOUT_URL . 'assets/css/yourpropfirm-checkout.css', [], YPF_CHECKOUT_VERSION);
 	    // Enqueue Bootstrap 5 CSS
@@ -51,14 +53,15 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    $wc_countries = new WC_Countries();
 	    wp_localize_script('ypf-checkout-js', 'ypf_data', [
 	        'home_url'          => esc_url(home_url()),
-	        'saved_state' => $form_data['state'] ?? '',  // Add the saved state value
         	'states' => $wc_countries->get_states(),
 	        'select_state_text' => __('Select State', 'yourpropfirm-checkout'),
 	        'enter_state_text'  => __('Enter State/Region', 'yourpropfirm-checkout'), // For text input placeholder
 	        'no_states_text'    => __('No states available', 'yourpropfirm-checkout'),
 	        'ajax_url' 			=> admin_url('admin-ajax.php'),
             'checkout_nonce' 	=> wp_create_nonce('ypf_checkout_nonce'),
-            'order_page_url' 	=> get_permalink(get_page_by_path('order'))
+            'order_page_url' 	=> get_permalink(get_page_by_path('order')),
+            'saved_state'       => isset($form_data['state']) ? $form_data['state'] : '',
+        	'saved_country'     => isset($form_data['country']) ? $form_data['country'] : ''
 	    ]);
 	}
 

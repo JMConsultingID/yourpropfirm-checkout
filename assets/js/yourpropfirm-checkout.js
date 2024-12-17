@@ -12,6 +12,12 @@
             formData.append('action', 'ypf_process_checkout');
             formData.append('nonce', ypf_data.checkout_nonce);
 
+            if (!form[0].checkValidity()) {
+                e.stopPropagation();
+                form.addClass('was-validated');
+                return;
+            }
+
             $.ajax({
                 url: ypf_data.ajax_url,
                 type: 'POST',
@@ -34,6 +40,9 @@
                 },
                 error: function() {
                     window.location.reload();
+                },
+                complete: function() {
+                    submitButton.prop('disabled', false);
                 }
             });
         });

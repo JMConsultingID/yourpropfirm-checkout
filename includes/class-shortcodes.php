@@ -51,7 +51,8 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    $wc_countries = new WC_Countries();
 	    wp_localize_script('ypf-checkout-js', 'ypf_data', [
 	        'home_url'          => esc_url(home_url()),
-	        'states'            => $wc_countries->get_states(),
+	        'saved_state' => $form_data['state'] ?? '',  // Add the saved state value
+        	'states' => $wc_countries->get_states(),
 	        'select_state_text' => __('Select State', 'yourpropfirm-checkout'),
 	        'enter_state_text'  => __('Enter State/Region', 'yourpropfirm-checkout'), // For text input placeholder
 	        'no_states_text'    => __('No states available', 'yourpropfirm-checkout'),
@@ -193,13 +194,13 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        </div>
 
 		        <!-- State -->
-		        <div class="col-md-6">
-		            <label for="state" class="form-label"><?php esc_html_e('State/Region', 'yourpropfirm-checkout'); ?></label>
-		            <div id="state-container">
-		                <input type="text" name="state" id="state" class="form-control" value="<?php echo esc_attr($form_data['state'] ?? ''); ?>" required>
-		            </div>
-		            <div class="invalid-feedback"><?php esc_html_e('Please enter your state/region.', 'yourpropfirm-checkout'); ?></div>
-		        </div>
+				<div class="col-md-6">
+				    <label for="state" class="form-label"><?php esc_html_e('State/Region', 'yourpropfirm-checkout'); ?></label>
+				    <div id="state-container">
+				        <!-- State field will be dynamically inserted here -->
+				    </div>
+				    <div class="invalid-feedback"><?php esc_html_e('Please enter your state/region.', 'yourpropfirm-checkout'); ?></div>
+				</div>
 
 		        <!-- City -->
 		        <div class="col-md-6">

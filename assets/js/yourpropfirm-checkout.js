@@ -48,28 +48,72 @@
         });
 
         // Handle dynamic state selection or input
-        $('#country').on('change', function () {
-            const country = $(this).val(); // Selected country code
-            const states = ypf_data.states; // Get states from localized data
-
-            // Clear any existing state field
-            $('#state-container').empty();
-
+        const savedState = ypf_data.saved_state;
+        
+        function updateStateField() {
+            const country = $('#country').val();
+            const states = ypf_data.states;
+            const container = $('#state-container');
+            
+            container.empty();
+            
             if (states[country] && Object.keys(states[country]).length) {
-                // Create a dropdown if states exist
-                let options = '<option value="">' + ypf_data.select_state_text + '</option>';
-                $.each(states[country], function(key, value) {
-                    options += '<option value="' + key + '">' + value + '</option>';
+                // Create select field for states
+                let select = $('<select>', {
+                    name: 'state',
+                    id: 'state',
+                    class: 'form-select',
+                    required: true
                 });
-                $('#state-container').append('<select name="state" id="state" required>' + options + '</select>');
+                
+                // Add default option
+                select.append($('<option>', {
+                    value: '',
+                    text: ypf_data.select_state_text
+                }));
+                
+                // Add state options
+                $.each(states[country], function(code, name) {
+                    let option = $('<option>', {
+                        value: code,
+                        text: name
+                    });
+                    
+                    // Select the saved state if it matches
+                    if (savedState === code) {
+                        option.prop('selected', true);
+                    }
+                    
+                    select.append(option);
+                });
+                
+                container.append(select);
             } else {
-                // Create a text input if no states exist
-                $('#state-container').append('<input type="text" name="state" id="state" placeholder="' + ypf_data.enter_state_text + '" required>');
+                // Create text input for states
+                let input = $('<input>', {
+                    type: 'text',
+                    name: 'state',
+                    id: 'state',
+                    class: 'form-control',
+                    required: true,
+                    placeholder: ypf_data.enter_state_text,
+                    value: savedState // Set the saved state value
+                });
+                
+                container.append(input);
             }
+        }
+
+        // Handle country change
+        $('#country').on('change', function() {
+            updateStateField();
         });
 
-        // Trigger change event on page load to initialize the state field
-        $('#country').trigger('change');
+        // Initialize state field on page load
+        // Small delay to ensure country selection is properly set
+        setTimeout(function() {
+            updateStateField();
+        }, 100);
     });
 
 })( jQuery );

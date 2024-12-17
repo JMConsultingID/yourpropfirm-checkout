@@ -26,7 +26,7 @@
                         // Clear form and redirect current page after delay
                         setTimeout(function() {
                             form[0].reset();
-                            window.location.href = ypf_data.order_page_url;
+                            window.location.href = ypf_data.home_url;
                         }, 2000);
                     } else {
                         window.location.reload();
@@ -34,9 +34,6 @@
                 },
                 error: function() {
                     window.location.reload();
-                },
-                complete: function() {
-                    submitButton.prop('disabled', false);
                 }
             });
         });

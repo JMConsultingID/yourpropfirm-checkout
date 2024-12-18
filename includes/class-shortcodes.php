@@ -95,24 +95,26 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    $states = $wc_countries->get_states();
 	    ?>
 
-	    <div class="ypf-steps mb-4">
-		    <div class="step-card">
-		        <!-- Current Step -->
-		        <div class="current-step-container">
-		            <div class="step-label">You Are Here</div>
-		            <div class="step-text">
-		                <span>1.</span>Billing Information
-		            </div>
-		        </div>
+	    <div class="yourpropfirm-checkout-step mt-4">
+		    <div class="ypf-steps mb-4">
+			    <div class="step-card">
+			        <!-- Current Step -->
+			        <div class="current-step-container">
+			            <div class="step-label">You Are Here</div>
+			            <div class="step-text">
+			                <span>1.</span>Billing Information
+			            </div>
+			        </div>
 
-		        <!-- Next Step -->
-		        <div class="next-step-container">
-		            <div class="step-label">Next Step</div>
-		            <div class="step-text">
-		                <span>2.</span>Review Order & Payment
-		            </div>
-		        </div>
-		    </div>
+			        <!-- Next Step -->
+			        <div class="next-step-container">
+			            <div class="step-label">Next Step</div>
+			            <div class="step-text">
+			                <span>2.</span>Review Order & Payment
+			            </div>
+			        </div>
+			    </div>
+			</div>
 		</div>
 
 	    <div class="yourpropfirm-checkout-container mt-4">

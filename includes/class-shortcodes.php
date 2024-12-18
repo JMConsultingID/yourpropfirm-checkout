@@ -52,7 +52,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    // Pass PHP data to JavaScript
 	    $wc_countries = new WC_Countries();
 	    wp_localize_script('ypf-checkout-js', 'ypf_data', [
-	        'home_url'          => esc_url(home_url()),
+	        'home_url'          => 'https://forfx.com',
         	'states' => $wc_countries->get_states(),
 	        'select_state_text' => __('Select State', 'yourpropfirm-checkout'),
 	        'enter_state_text'  => __('Enter State/Region', 'yourpropfirm-checkout'), // For text input placeholder

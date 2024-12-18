@@ -95,6 +95,29 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    $states = $wc_countries->get_states();
 	    ?>
 
+	    <div class="yourpropfirm-checkout-steps ypf-steps mb-4">
+		    <div class="card bg-dark text-white">
+		        <div class="card-body p-3">
+		            <div class="d-flex justify-content-between align-items-center">
+		                <div class="step current">
+		                    <div class="step-label text-muted small mb-1"><?php esc_html_e('You Are Here', 'yourpropfirm-checkout'); ?></div>
+		                    <div class="step-text">
+		                        <span class="step-number">1.</span>
+		                        <?php esc_html_e('Choose Your Account', 'yourpropfirm-checkout'); ?>
+		                    </div>
+		                </div>
+		                <div class="step next">
+		                    <div class="step-label text-muted small mb-1"><?php esc_html_e('Next Step', 'yourpropfirm-checkout'); ?></div>
+		                    <div class="step-text text-muted">
+		                        <span class="step-number">2.</span>
+		                        <?php esc_html_e('Review Your Order', 'yourpropfirm-checkout'); ?>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
 	    <div class="yourpropfirm-checkout-container mt-4">
 
 		<form id="ypf-billing-form" method="post" class="needs-validation" novalidate>

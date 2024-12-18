@@ -96,43 +96,21 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    ?>
 
 	    <div class="ypf-steps mb-4">
-		    <div class="card bg-dark text-white">
-		        <div class="card-body p-3">
-		            <div class="step-container">
-		                <!-- Step 1 -->
-		                <div class="step current">
-		                    <div class="step-number">1</div>
-		                    <div class="step-content">
-		                        <div class="step-label text-muted small"><?php esc_html_e('You Are Here', 'yourpropfirm-checkout'); ?></div>
-		                        <div class="step-text"><?php esc_html_e('Billing Information', 'yourpropfirm-checkout'); ?></div>
-		                    </div>
+		    <div class="step-card">
+		        <div class="step-container">
+		            <!-- Current Step -->
+		            <div class="current-step">
+		                <div class="step-label">You Are Here</div>
+		                <div class="step-text">
+		                    <span>1.</span>Billing Information
 		                </div>
+		            </div>
 
-		                <!-- Step 2 -->
-		                <div class="step">
-		                    <div class="step-number">2</div>
-		                    <div class="step-content">
-		                        <div class="step-label text-muted small">&nbsp;</div>
-		                        <div class="step-text"><?php esc_html_e('Review Order', 'yourpropfirm-checkout'); ?></div>
-		                    </div>
-		                </div>
-
-		                <!-- Step 3 -->
-		                <div class="step">
-		                    <div class="step-number">3</div>
-		                    <div class="step-content">
-		                        <div class="step-label text-muted small">&nbsp;</div>
-		                        <div class="step-text"><?php esc_html_e('Payment', 'yourpropfirm-checkout'); ?></div>
-		                    </div>
-		                </div>
-
-		                <!-- Step 4 -->
-		                <div class="step">
-		                    <div class="step-number">4</div>
-		                    <div class="step-content">
-		                        <div class="step-label text-muted small">&nbsp;</div>
-		                        <div class="step-text"><?php esc_html_e('Confirmation', 'yourpropfirm-checkout'); ?></div>
-		                    </div>
+		            <!-- Next Step -->
+		            <div class="next-step">
+		                <div class="step-label">Next Step</div>
+		                <div class="step-text">
+		                    <span>2.</span>Review Order & Payment
 		                </div>
 		            </div>
 		        </div>
@@ -140,104 +118,52 @@ class Yourpropfirm_Checkout_Shortcodes {
 		</div>
 
 		<style>
-		.ypf-steps .card {
-		    border-radius: 15px;
-		    border: 1px solid rgba(255,255,255,0.1);
+		.ypf-steps {
+		    margin: 20px 0;
+		}
+
+		.step-card {
+		    background-color: #1a1b26;
+		    border-radius: 12px;
+		    padding: 16px 24px;
 		}
 
 		.step-container {
 		    display: flex;
 		    justify-content: space-between;
 		    align-items: flex-start;
-		    position: relative;
-		}
-
-		.step-container::before {
-		    content: '';
-		    position: absolute;
-		    top: 24px;
-		    left: 0;
-		    right: 0;
-		    height: 2px;
-		    background: rgba(255,255,255,0.1);
-		    z-index: 1;
-		}
-
-		.step {
-		    display: flex;
-		    flex-direction: column;
-		    align-items: center;
-		    text-align: center;
-		    position: relative;
-		    z-index: 2;
-		    flex: 1;
-		}
-
-		.step-number {
-		    width: 32px;
-		    height: 32px;
-		    border-radius: 50%;
-		    background: #343a40;
-		    border: 2px solid rgba(255,255,255,0.2);
-		    display: flex;
-		    align-items: center;
-		    justify-content: center;
-		    margin-bottom: 8px;
-		    font-weight: 500;
-		    color: rgba(255,255,255,0.7);
-		}
-
-		.step.current .step-number {
-		    background: #0d6efd;
-		    border-color: #0d6efd;
-		    color: white;
-		}
-
-		.step-content {
-		    width: 100%;
 		}
 
 		.step-label {
-		    font-size: 0.75rem;
+		    font-size: 12px;
+		    color: #6c757d;
+		    margin-bottom: 4px;
 		    text-transform: uppercase;
 		    letter-spacing: 0.5px;
-		    margin-bottom: 2px;
 		}
 
 		.step-text {
-		    font-size: 0.875rem;
-		    color: rgba(255,255,255,0.7);
-		}
-
-		.step.current .step-text {
-		    color: white;
+		    color: #fff;
+		    font-size: 14px;
 		    font-weight: 500;
 		}
 
-		@media (max-width: 768px) {
-		    .step-text {
-		        font-size: 0.75rem;
-		    }
-		    
-		    .step-label {
-		        font-size: 0.7rem;
-		    }
-		    
-		    .step-number {
-		        width: 28px;
-		        height: 28px;
-		    }
+		.step-text span {
+		    margin-right: 4px;
+		}
+
+		.next-step .step-text {
+		    color: #6c757d;
 		}
 
 		@media (max-width: 576px) {
-		    .step-container::before {
-		        top: 20px;
+		    .step-container {
+		        flex-direction: column;
+		        gap: 16px;
 		    }
 		    
-		    .step-number {
-		        width: 24px;
-		        height: 24px;
-		        font-size: 0.875rem;
+		    .step-card {
+		        padding: 12px 16px;
 		    }
 		}
 		</style>

@@ -123,9 +123,26 @@ class Yourpropfirm_Checkout_Shortcodes {
 		}
 
 		.step-card {
-		    background-color: #1a1b26;
-		    border-radius: 12px;
+		    background: linear-gradient(to right, rgba(67, 66, 90, 0.7) 0%, rgba(47, 46, 65, 0.7) 100%);
+		    border-radius: 16px;
 		    padding: 16px 24px;
+		    position: relative;
+		    border: 1px solid rgba(88, 88, 115, 0.3);
+		    box-shadow: 0 0 0 1px rgba(88, 88, 115, 0.1);
+		}
+
+		/* Glowing border effect */
+		.step-card::before {
+		    content: '';
+		    position: absolute;
+		    top: -1px;
+		    left: -1px;
+		    right: -1px;
+		    bottom: -1px;
+		    border-radius: 16px;
+		    background: linear-gradient(90deg, rgba(123, 97, 255, 0.2) 0%, rgba(123, 97, 255, 0) 100%);
+		    z-index: -1;
+		    pointer-events: none;
 		}
 
 		.step-container {
@@ -136,7 +153,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 		.step-label {
 		    font-size: 12px;
-		    color: #6c757d;
+		    color: rgba(255, 255, 255, 0.5);
 		    margin-bottom: 4px;
 		    text-transform: uppercase;
 		    letter-spacing: 0.5px;
@@ -144,7 +161,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 		.step-text {
 		    color: #fff;
-		    font-size: 14px;
+		    font-size: 16px;
 		    font-weight: 500;
 		}
 
@@ -153,7 +170,22 @@ class Yourpropfirm_Checkout_Shortcodes {
 		}
 
 		.next-step .step-text {
-		    color: #6c757d;
+		    color: rgba(255, 255, 255, 0.5);
+		}
+
+		/* Active state glow effect */
+		.current-step {
+		    position: relative;
+		}
+
+		.current-step::after {
+		    content: '';
+		    position: absolute;
+		    left: -24px;
+		    right: 50%;
+		    bottom: -17px;
+		    height: 1px;
+		    background: linear-gradient(90deg, rgba(123, 97, 255, 0.5) 0%, rgba(123, 97, 255, 0) 100%);
 		}
 
 		@media (max-width: 576px) {
@@ -164,6 +196,10 @@ class Yourpropfirm_Checkout_Shortcodes {
 		    
 		    .step-card {
 		        padding: 12px 16px;
+		    }
+
+		    .current-step::after {
+		        display: none;
 		    }
 		}
 		</style>

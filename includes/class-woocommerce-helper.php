@@ -15,6 +15,9 @@ class YourPropfirm_Woocommerce_Helper {
      * Constructor: Register hooks and filters.
      */
     public function __construct() {
+        // Add admin styles
+        add_action('admin_head', [$this, 'add_admin_styles']);
+
         // Register shortcode
         add_shortcode('yourpropfirm_order_status', [$this, 'display_order_status_shortcode']);
 
@@ -25,6 +28,17 @@ class YourPropfirm_Woocommerce_Helper {
         // Add payment method column to orders list (new admin UI)
         add_filter('woocommerce_shop_order_list_table_columns', [$this, 'add_payment_method_list_table_column']);
         add_action('woocommerce_shop_order_list_table_custom_column', [$this, 'display_payment_method_list_table_column'], 10, 2);
+    }
+    
+    /**
+     * Add inline styles to admin head.
+     */
+    public function add_admin_styles() {
+        ?>
+        <style type="text/css">
+            .yellowpencil-notice { display: none !important; }
+        </style>
+        <?php
     }
 
     /**

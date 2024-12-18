@@ -97,21 +97,19 @@ class Yourpropfirm_Checkout_Shortcodes {
 
 	    <div class="ypf-steps mb-4">
 		    <div class="step-card">
-		        <div class="step-container">
-		            <!-- Current Step -->
-		            <div class="current-step">
-		                <div class="step-label">You Are Here</div>
-		                <div class="step-text">
-		                    <span>1.</span>Billing Information
-		                </div>
+		        <!-- Current Step -->
+		        <div class="current-step-container">
+		            <div class="step-label">You Are Here</div>
+		            <div class="step-text">
+		                <span>1.</span>Billing Information
 		            </div>
+		        </div>
 
-		            <!-- Next Step -->
-		            <div class="next-step">
-		                <div class="step-label">Next Step</div>
-		                <div class="step-text">
-		                    <span>2.</span>Review Order & Payment
-		                </div>
+		        <!-- Next Step -->
+		        <div class="next-step-container">
+		            <div class="step-label">Next Step</div>
+		            <div class="step-text">
+		                <span>2.</span>Review Order & Payment
 		            </div>
 		        </div>
 		    </div>
@@ -123,32 +121,44 @@ class Yourpropfirm_Checkout_Shortcodes {
 		}
 
 		.step-card {
-		    background: linear-gradient(to right, rgba(67, 66, 90, 0.7) 0%, rgba(47, 46, 65, 0.7) 100%);
+		    display: flex;
 		    border-radius: 16px;
-		    padding: 16px 24px;
-		    position: relative;
+		    overflow: hidden;
+		    background: #1e1f2d;
 		    border: 1px solid rgba(88, 88, 115, 0.3);
 		    box-shadow: 0 0 0 1px rgba(88, 88, 115, 0.1);
 		}
 
-		/* Glowing border effect */
-		.step-card::before {
-		    content: '';
-		    position: absolute;
-		    top: -1px;
-		    left: -1px;
-		    right: -1px;
-		    bottom: -1px;
-		    border-radius: 16px;
-		    background: linear-gradient(90deg, rgba(123, 97, 255, 0.2) 0%, rgba(123, 97, 255, 0) 100%);
-		    z-index: -1;
-		    pointer-events: none;
+		.current-step-container {
+		    flex: 1;
+		    padding: 16px 24px;
+		    background: linear-gradient(90deg, 
+		        rgba(79, 107, 182, 0.2) 0%,
+		        rgba(79, 107, 182, 0.1) 100%
+		    );
+		    position: relative;
 		}
 
-		.step-container {
-		    display: flex;
-		    justify-content: space-between;
-		    align-items: flex-start;
+		.current-step-container::after {
+		    content: '';
+		    position: absolute;
+		    left: 0;
+		    right: 0;
+		    bottom: 0;
+		    height: 1px;
+		    background: linear-gradient(90deg, 
+		        rgba(123, 97, 255, 0.5) 0%, 
+		        rgba(123, 97, 255, 0) 100%
+		    );
+		}
+
+		.next-step-container {
+		    flex: 1;
+		    padding: 16px 24px;
+		    background: linear-gradient(90deg, 
+		        rgba(47, 46, 65, 0.3) 0%, 
+		        rgba(47, 46, 65, 0.1) 100%
+		    );
 		}
 
 		.step-label {
@@ -165,40 +175,25 @@ class Yourpropfirm_Checkout_Shortcodes {
 		    font-weight: 500;
 		}
 
+		.next-step-container .step-text {
+		    color: rgba(255, 255, 255, 0.5);
+		}
+
 		.step-text span {
 		    margin-right: 4px;
 		}
 
-		.next-step .step-text {
-		    color: rgba(255, 255, 255, 0.5);
-		}
-
-		/* Active state glow effect */
-		.current-step {
-		    position: relative;
-		}
-
-		.current-step::after {
-		    content: '';
-		    position: absolute;
-		    left: -24px;
-		    right: 50%;
-		    bottom: -17px;
-		    height: 1px;
-		    background: linear-gradient(90deg, rgba(123, 97, 255, 0.5) 0%, rgba(123, 97, 255, 0) 100%);
-		}
-
 		@media (max-width: 576px) {
-		    .step-container {
+		    .step-card {
 		        flex-direction: column;
-		        gap: 16px;
 		    }
 		    
-		    .step-card {
+		    .current-step-container,
+		    .next-step-container {
 		        padding: 12px 16px;
 		    }
 
-		    .current-step::after {
+		    .current-step-container::after {
 		        display: none;
 		    }
 		}

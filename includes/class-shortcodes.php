@@ -295,11 +295,12 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                $_product = apply_filters('woocommerce_cart_item_product', $last_item['data'], $last_item, key($cart_items));
 				                $product_name = $_product->get_name();
 				                ?>
-				                <div class="d-flex justify-content-between align-items-center mb-3">
+				                <div class="d-flex flex-rowmb-3">
 				                    <div>
 				                        <strong><?php echo wp_kses_post($product_name); ?></strong>
 				                    </div>
-				                    <div class="text-end">
+				                    <div>
+				                    	<strong>
 				                        <?php 
 				                        echo apply_filters(
 				                            'woocommerce_cart_item_subtotal',
@@ -308,6 +309,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                            key($cart_items)
 				                        ); 
 				                        ?>
+				                        </strong>
 				                    </div>
 				                </div>
 				            <?php } ?>

@@ -16,28 +16,3 @@
 .yourpropfirm-checkout-container .form-check-input.is-invalid ~ .invalid-feedback {
     display: block;
 }
-
-.yourpropfirm-checkout-steps.ypf-steps .card {
-    border-radius: 15px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.yourpropfirm-checkout-steps.ypf-steps .step-number {
-    font-weight: 500;
-    margin-right: 4px;
-}
-
-.yourpropfirm-checkout-steps.ypf-steps .step.current .step-text {
-    color: #fff;
-    font-weight: 500;
-}
-
-.yourpropfirm-checkout-steps.ypf-steps .step.next .step-text {
-    opacity: 0.7;
-}
-
-.yourpropfirm-checkout-steps.ypf-steps .step-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}

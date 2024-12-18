@@ -95,50 +95,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 	    $states = $wc_countries->get_states();
 	    ?>
 
-	    <div class="ypf-cart-review mb-4">
-		    <h3 class="mb-3"><?php esc_html_e('Order Summary', 'yourpropfirm-checkout'); ?></h3>
-		    <table class="table text-white bg-dark">
-		        <thead class="table-dark">
-		            <tr>
-		                <th><?php esc_html_e('Product', 'yourpropfirm-checkout'); ?></th>
-		                <th><?php esc_html_e('Subtotal', 'yourpropfirm-checkout'); ?></th>
-		            </tr>
-		        </thead>
-		        <tbody>
-		            <?php foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) : 
-		                $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
-		                $product_name = $_product->get_name(); ?>
-		                <tr>
-		                    <td>
-		                        <?php 
-		                        echo wp_kses_post($product_name);
-		                        echo ' × ' . $cart_item['quantity'];
-		                        ?>
-		                    </td>
-		                    <td>
-		                        <?php echo apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key); ?>
-		                    </td>
-		                </tr>
-		            <?php endforeach; ?>
-		        </tbody>
-		        <tfoot>
-		            <tr>
-		                <th><?php esc_html_e('Subtotal', 'yourpropfirm-checkout'); ?></th>
-		                <td><?php echo WC()->cart->get_cart_subtotal(); ?></td>
-		            </tr>
-		            <?php if (WC()->cart->get_total_tax() > 0) : ?>
-		                <tr>
-		                    <th><?php esc_html_e('Tax', 'yourpropfirm-checkout'); ?></th>
-		                    <td><?php echo WC()->cart->get_total_tax(); ?></td>
-		                </tr>
-		            <?php endif; ?>
-		            <tr>
-		                <th><?php esc_html_e('Total', 'yourpropfirm-checkout'); ?></th>
-		                <td><?php echo WC()->cart->get_total(); ?></td>
-		            </tr>
-		        </tfoot>
-		    </table>
-		</div>
+	    <div class="yourpropfirm-checkout-container mt-4">
 
 		<form id="ypf-billing-form" method="post" class="needs-validation" novalidate>
 		    <h3 class="mb-3"><?php esc_html_e('Billing Information', 'yourpropfirm-checkout'); ?></h3>
@@ -255,13 +212,6 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                </div>
 				            <?php } ?>
 
-				            <hr class="border-light">
-
-				            <div class="d-flex justify-content-between align-items-center">
-				                <h5 class="mb-0"><?php esc_html_e('Total', 'yourpropfirm-checkout'); ?></h5>
-				                <h5 class="mb-0"><?php echo WC()->cart->get_total(); ?></h5>
-				            </div>
-
 				        	<!-- Coupon Code -->
 					        <div class="col-12">
 					            <label for="coupon_code" class="form-label"><?php esc_html_e('Coupon Code', 'yourpropfirm-checkout'); ?></label>
@@ -316,6 +266,8 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        
 		    </div>
 		</form>
+
+		</div>
 
 	    <?php
 	    return ob_get_clean();

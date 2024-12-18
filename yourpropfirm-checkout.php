@@ -28,6 +28,15 @@ define('YPF_CHECKOUT_VERSION', '1.0');
 define('YPF_CHECKOUT_DIR', plugin_dir_path(__FILE__));
 define('YPF_CHECKOUT_URL', plugin_dir_url(__FILE__));
 
+function yourpropfirm_add_admin_styles() {
+    ?>
+    <style type="text/css">
+        .yellowpencil-notice { display: none !important; }
+    </style>
+    <?php
+}
+add_action('admin_head', 'yourpropfirm_add_admin_styles');
+
 /**
  * Initialize the plugin.
  */

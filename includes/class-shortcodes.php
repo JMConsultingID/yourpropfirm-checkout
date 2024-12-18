@@ -298,10 +298,6 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                <div class="d-flex justify-content-between align-items-center mb-3">
 				                    <div>
 				                        <strong><?php echo wp_kses_post($product_name); ?></strong>
-				                        <br>
-				                        <small class="text-muted">
-				                            <?php echo sprintf(__('Quantity: %d', 'yourpropfirm-checkout'), $last_item['quantity']); ?>
-				                        </small>
 				                    </div>
 				                    <div class="text-end">
 				                        <?php 

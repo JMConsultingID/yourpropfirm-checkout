@@ -96,7 +96,7 @@ class Yourpropfirm_Checkout {
         // Check if we're looking for the checkout form template
         if ($template_name === 'checkout/form-checkout.php') {
             // Define path to your custom template
-            $plugin_template = YPF_CHECKOUT_DIR . 'templates/checkout/form-checkout.php';
+            $plugin_template = YPF_CHECKOUT_DIR . 'templates/woocommerce/checkout/form-checkout.php';
             
             // Use custom template if it exists
             if (file_exists($plugin_template)) {

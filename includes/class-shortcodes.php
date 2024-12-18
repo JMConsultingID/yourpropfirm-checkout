@@ -106,7 +106,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 		                        <?php esc_html_e('Choose Your Account', 'yourpropfirm-checkout'); ?>
 		                    </div>
 		                </div>
-		                <div class="step next">
+		                <div class="step current">
 		                    <div class="step-label text-muted small mb-1"><?php esc_html_e('Next Step', 'yourpropfirm-checkout'); ?></div>
 		                    <div class="step-text text-muted">
 		                        <span class="step-number">2.</span>

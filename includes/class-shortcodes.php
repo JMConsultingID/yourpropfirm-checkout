@@ -224,6 +224,44 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        <div class="d-flex justify-content-center my-4">
 				    <div class="card text-white bg-dark p-3 shadow-sm" style="width: 80%;">
 				        <div class="card-body">
+
+				            <?php
+				            // Get the last item in cart
+				            $cart_items = WC()->cart->get_cart();
+				            $last_item = end($cart_items);
+				            
+				            if ($last_item) {
+				                $_product = apply_filters('woocommerce_cart_item_product', $last_item['data'], $last_item, key($cart_items));
+				                $product_name = $_product->get_name();
+				                ?>
+				                <div class="d-flex justify-content-between align-items-center mb-3">
+				                    <div>
+				                        <strong><?php echo wp_kses_post($product_name); ?></strong>
+				                        <br>
+				                        <small class="text-muted">
+				                            <?php echo sprintf(__('Quantity: %d', 'yourpropfirm-checkout'), $last_item['quantity']); ?>
+				                        </small>
+				                    </div>
+				                    <div class="text-end">
+				                        <?php 
+				                        echo apply_filters(
+				                            'woocommerce_cart_item_subtotal',
+				                            WC()->cart->get_product_subtotal($_product, $last_item['quantity']),
+				                            $last_item,
+				                            key($cart_items)
+				                        ); 
+				                        ?>
+				                    </div>
+				                </div>
+				            <?php } ?>
+
+				            <hr class="border-light">
+
+				            <div class="d-flex justify-content-between align-items-center">
+				                <h5 class="mb-0"><?php esc_html_e('Total', 'yourpropfirm-checkout'); ?></h5>
+				                <h5 class="mb-0"><?php echo WC()->cart->get_total(); ?></h5>
+				            </div>
+
 				        	<!-- Coupon Code -->
 					        <div class="col-12">
 					            <label for="coupon_code" class="form-label"><?php esc_html_e('Coupon Code', 'yourpropfirm-checkout'); ?></label>

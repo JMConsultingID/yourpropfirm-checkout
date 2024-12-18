@@ -214,10 +214,10 @@ class Yourpropfirm_Checkout_Shortcodes {
 				                $product_name = $_product->get_name();
 				                ?>
 				                <div class="d-flex flex-column justify-content-center align-items-center mb-3">
-				                    <div class="woocommerce-product-name">
+				                    <div class="woocommerce-product-name text-center">
 				                        <strong><?php echo wp_kses_post($product_name); ?></strong>
 				                    </div>
-				                    <div class="woocommerce-product-price">
+				                    <div class="woocommerce-product-price text-center">
 				                    	<h3>
 					                    	<strong>
 					                        <?php 

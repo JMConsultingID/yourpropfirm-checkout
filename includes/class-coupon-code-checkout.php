@@ -43,9 +43,9 @@ class YourPropfirm_Coupon_Code_Checkout {
         if (is_checkout()) {
             wp_enqueue_script(
                 'yourpropfirm-single-checkout-coupon-ajax', 
-                plugin_dir_url(__FILE__) . 'assets/js/yourpropfirm-single-checkout.js', 
-                array('jquery'), 
-                null, 
+                YPF_CHECKOUT_URL . 'assets/js/yourpropfirm-single-checkout.js', 
+                ['jquery'], 
+                YPF_CHECKOUT_VERSION, 
                 true
             );
             wp_localize_script(
@@ -55,7 +55,6 @@ class YourPropfirm_Coupon_Code_Checkout {
             );
         }
     }
-
     /**
      * Handle AJAX coupon application.
      */

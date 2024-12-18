@@ -126,9 +126,9 @@ class YourPropfirm_Single_Product_Checkout {
     /**
      * Remove WooCommerce terms and conditions from the checkout page.
      */
-    // public function remove_terms_and_conditions() {
-    //     remove_action('woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30);
-    // }
+    public function remove_terms_and_conditions() {
+        //remove_action('woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30);
+    }
 
     /**
      * Hide specific countries on WooCommerce checkout.

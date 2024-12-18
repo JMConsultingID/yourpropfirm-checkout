@@ -90,6 +90,7 @@ class Yourpropfirm_Checkout {
         require_once YPF_CHECKOUT_DIR . 'includes/class-single-product-checkout.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-coupon-code-checkout.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-woocommerce-helper.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-checkout-validation.php';
     }
 
     /**
@@ -103,7 +104,7 @@ class Yourpropfirm_Checkout {
         new YourPropfirm_Single_Product_Checkout();
         new YourPropfirm_Coupon_Code_Checkout();
         new YourPropfirm_Woocommerce_Helper();
-        
+        new YourPropfirm_Checkout_Validation();
     }
 
     public function override_checkout_template($template, $template_name, $template_path) {

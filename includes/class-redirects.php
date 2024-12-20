@@ -70,34 +70,19 @@ class Yourpropfirm_Checkout_Redirects {
         if (is_front_page() || is_home()) {
             ?>
             <script type="text/javascript">
-            document.addEventListener("DOMContentLoaded", function() {
-                // Add try-catch for error handling
-                try {
+                document.addEventListener("DOMContentLoaded", function() {
                     setTimeout(function() {
                         var urlParams = new URLSearchParams(window.location.search);
                         var refParam = urlParams.get('ref');
-                        
-                        // Sanitize the ref parameter
+                        var redirectUrl = "<?php echo esc_js($redirect_referral_url); ?>";
                         if (refParam) {
-                            refParam = encodeURIComponent(refParam.replace(/[^\w-]/g, ''));
+                            window.location.href = redirectUrl + "?ref=" + refParam;
+                        } else {
+                            window.location.href = redirectUrl;
                         }
-                        
-                        var redirectUrl = "<?php echo esc_js($escaped_url); ?>";
-                        
-                        // Build the final URL
-                        var finalUrl = redirectUrl;
-                        if (refParam) {
-                            finalUrl += (finalUrl.indexOf('?') === -1 ? '?' : '&') + 'ref=' + refParam;
-                        }
-                        
-                        // Perform the redirect
-                        window.location.href = finalUrl;
-                    }, 100); // 1 second delay
-                } catch (error) {
-                    console.error('Redirect error:', error);
-                }
-            });
-        </script>
+                    }, 100); // 5000 milliseconds = 5 seconds
+                });
+            </script>
             <?php
         }
     }

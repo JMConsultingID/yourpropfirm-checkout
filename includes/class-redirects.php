@@ -80,7 +80,7 @@ class Yourpropfirm_Checkout_Redirects {
                         } else {
                             window.location.href = redirectUrl;
                         }
-                    }, 100); // 5000 milliseconds = 5 seconds
+                    }, 10);
                 });
             </script>
             <?php

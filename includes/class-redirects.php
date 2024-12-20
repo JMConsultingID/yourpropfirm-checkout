@@ -24,6 +24,7 @@ class Yourpropfirm_Checkout_Redirects {
      */
     public function __construct() {
         add_action('template_redirect', [$this, 'redirect_default_checkout']);
+        add_action('wp_footer', 'yourpropfirm_checkout_affiliate_redirect_by_page_id', 999);
     }
 
     /**
@@ -64,4 +65,25 @@ class Yourpropfirm_Checkout_Redirects {
 
     }
 
+    function yourpropfirm_checkout_affiliate_redirect_by_page_id() {
+        $redirect_referral_url = 'https://www.forfx.com/';
+        if (is_front_page() || is_home()) {
+            ?>
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function() {
+                    setTimeout(function() {
+                        var urlParams = new URLSearchParams(window.location.search);
+                        var refParam = urlParams.get('ref');
+                        var redirectUrl = "<?php echo esc_js($redirect_referral_url); ?>";
+                        if (refParam) {
+                            window.location.href = redirectUrl + "?ref=" + refParam;
+                        } else {
+                            window.location.href = redirectUrl;
+                        }
+                    }, 1000); // 5000 milliseconds = 5 seconds
+                });
+            </script>
+            <?php
+        }
+    }
 }

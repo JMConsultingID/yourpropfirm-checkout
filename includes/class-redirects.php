@@ -24,7 +24,7 @@ class Yourpropfirm_Checkout_Redirects {
      */
     public function __construct() {
         add_action('template_redirect', [$this, 'redirect_default_checkout']);
-        add_action('wp_footer', 'yourpropfirm_checkout_affiliate_redirect_by_page_id', 999);
+        add_action('wp_footer', [$this, 'yourpropfirm_checkout_affiliate_redirect_by_page_id'], 10);
     }
 
     /**

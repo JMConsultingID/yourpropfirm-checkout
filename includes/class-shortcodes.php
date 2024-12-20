@@ -248,7 +248,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 							            <label class="form-check-label" for="terms">
 							                <?php printf(
 							                    __('I agree to the <a href="%s" target="_blank" class="text-warning">Terms and Conditions</a>', 'yourpropfirm-checkout'),
-							                    esc_url(get_permalink(wc_get_page_id('terms')))
+							                    esc_url('https://cdn.prod.website-files.com/65087adb975c6a28d41fbb5a/66d5813fdcd49d516156c376_FORFX%20T%26C%20(4).pdf')
 							                ); ?>
 							            </label>
 							            <div class="invalid-feedback">
@@ -266,7 +266,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 							            <label class="form-check-label" for="privacy_policy">
 							                <?php printf(
 							                    __('I have read and agree to the <a href="%s" target="_blank" class="text-warning">Privacy Policy</a>', 'yourpropfirm-checkout'),
-							                    esc_url(get_privacy_policy_url())
+							                    esc_url('https://cdn.prod.website-files.com/65087adb975c6a28d41fbb5a/66717db7ae186627a255b318_forfx%20privacy.pdf')
 							                ); ?>
 							            </label>
 							            <div class="invalid-feedback">

@@ -65,7 +65,7 @@ class Yourpropfirm_Checkout_Redirects {
 
     }
 
-    function yourpropfirm_checkout_affiliate_redirect_by_page_id() {
+    public function yourpropfirm_checkout_affiliate_redirect_by_page_id() {
         $redirect_referral_url = 'https://www.forfx.com/';
         if (is_front_page() || is_home()) {
             ?>

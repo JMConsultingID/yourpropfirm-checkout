@@ -199,25 +199,33 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        </div>
 
 
-		        <div class="col-md-12 yourpropfirm_mt_version yourpropfirm_mt_version_field_radio_wrapper">
-		            <label class="form-label">Trading Platforms&nbsp;<abbr class="required" title="required">*</abbr></label>
-		            <div class="form-row form-row-wide ypf_mt_version_field ypf_mt_version_radio_option validate-required" id="yourpropfirm_mt_version_field" data-priority="">            
-		                <div class="field-group">
-		                    <input type="radio" class="input-radio" value="MT4" name="yourpropfirm_mt_version" aria-required="true" id="yourpropfirm_mt_version_MT4" checked="checked">
-		                    <label for="yourpropfirm_mt_version_MT4" class="radio">MT4</label>
-		                </div>
-		                
-		                <div class="field-group">
-		                    <input type="radio" class="input-radio" value="MT5" name="yourpropfirm_mt_version" aria-required="true" id="yourpropfirm_mt_version_MT5">
-		                    <label for="yourpropfirm_mt_version_MT5" class="radio">MT5</label>
-		                </div>
-		                
-		                <div class="field-group">
-		                    <input type="radio" class="input-radio" value="CTrader" name="yourpropfirm_mt_version" aria-required="true" id="yourpropfirm_mt_version_CTrader">
-		                    <label for="yourpropfirm_mt_version_CTrader" class="radio">CTrader</label>
-		                </div>
-		            </div>
-        		</div>		        
+		        <div class="col-12 mb-3">
+				    <label class="form-label">
+				        Trading Platforms <span class="text-danger">*</span>
+				    </label>
+				    <div class="d-flex justify-content-center gap-4">
+				        <div class="form-check">
+				            <input class="form-check-input" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT4" value="MT4" checked>
+				            <label class="form-check-label" for="yourpropfirm_mt_version_MT4">
+				                MT4
+				            </label>
+				        </div>
+				        
+				        <div class="form-check">
+				            <input class="form-check-input" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT5" value="MT5">
+				            <label class="form-check-label" for="yourpropfirm_mt_version_MT5">
+				                MT5
+				            </label>
+				        </div>
+				        
+				        <div class="form-check">
+				            <input class="form-check-input" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_CTrader" value="CTrader">
+				            <label class="form-check-label" for="yourpropfirm_mt_version_CTrader">
+				                CTrader
+				            </label>
+				        </div>
+				    </div>
+				</div>	        
 
 		        <div class="d-flex justify-content-center my-4">
 				    <div class="card text-white bg-dark p-3 shadow-sm" style="width: 80%;">

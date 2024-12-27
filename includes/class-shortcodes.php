@@ -204,22 +204,22 @@ class Yourpropfirm_Checkout_Shortcodes {
 				        Trading Platforms <span class="text-danger">*</span>
 				    </label>
 				    <div class="d-flex justify-content-center gap-4">
-				        <div class="form-check mt-3 me-3">
-				            <input class="form-check-input" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT4" value="MT4" checked>
+				        <div class="form-check">
+				            <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT4" value="MT4" checked>
 				            <label class="form-check-label" for="yourpropfirm_mt_version_MT4">
 				                MT4
 				            </label>
 				        </div>
 				        
-				        <div class="form-check mt-3 me-3">
-				            <input class="form-check-input" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT5" value="MT5">
+				        <div class="form-check">
+				            <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT5" value="MT5">
 				            <label class="form-check-label" for="yourpropfirm_mt_version_MT5">
 				                MT5
 				            </label>
 				        </div>
 				        
-				        <div class="form-check mt-3 me-3">
-				            <input class="form-check-input" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_CTrader" value="CTrader">
+				        <div class="form-check">
+				            <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_CTrader" value="CTrader">
 				            <label class="form-check-label" for="yourpropfirm_mt_version_CTrader">
 				                CTrader
 				            </label>

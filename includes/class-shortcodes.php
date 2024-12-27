@@ -271,7 +271,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 							<div class="mt-4 mb-3">
 							    <div class="d-flex flex-column align-items-center">
 							        <div class="form-check">
-							            <input class="form-check-input me-2" type="checkbox" name="terms" id="terms" required>
+							            <input class="form-check-input me-2 mt-3" type="checkbox" name="terms" id="terms" required>
 							            <label class="form-check-label" for="terms">
 							                <?php printf(
 							                    __('I agree to the <a href="%s" target="_blank" class="text-warning">Terms and Conditions</a>', 'yourpropfirm-checkout'),
@@ -289,7 +289,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 							<div class="mb-3">
 							    <div class="d-flex flex-column align-items-center">
 							        <div class="form-check">
-							            <input class="form-check-input me-2" type="checkbox" name="privacy_policy" id="privacy_policy" required>
+							            <input class="form-check-input me-2 mt-3" type="checkbox" name="privacy_policy" id="privacy_policy" required>
 							            <label class="form-check-label" for="privacy_policy">
 							                <?php printf(
 							                    __('I have read and agree to the <a href="%s" target="_blank" class="text-warning">Privacy Policy</a>', 'yourpropfirm-checkout'),

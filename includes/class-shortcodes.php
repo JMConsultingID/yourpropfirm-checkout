@@ -199,7 +199,7 @@ class Yourpropfirm_Checkout_Shortcodes {
 		        </div>
 
 
-		        <div class="col-12 mb-3">
+		        <div class="col-12 mb-3 mt-5 text-center">
 				    <label class="form-label">
 				        Trading Platforms <span class="text-danger">*</span>
 				    </label>

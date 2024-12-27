@@ -198,7 +198,26 @@ class Yourpropfirm_Checkout_Shortcodes {
 		            <div class="invalid-feedback"><?php esc_html_e('Please enter your postal code.', 'yourpropfirm-checkout'); ?></div>
 		        </div>
 
-		        
+
+		        <div class="col-md-12 yourpropfirm_mt_version yourpropfirm_mt_version_field_radio_wrapper">
+		            <label class="form-label">Trading Platforms&nbsp;<abbr class="required" title="required">*</abbr></label>
+		            <div class="form-row form-row-wide ypf_mt_version_field ypf_mt_version_radio_option validate-required" id="yourpropfirm_mt_version_field" data-priority="">            
+		                <div class="field-group">
+		                    <input type="radio" class="input-radio" value="MT4" name="yourpropfirm_mt_version" aria-required="true" id="yourpropfirm_mt_version_MT4" checked="checked">
+		                    <label for="yourpropfirm_mt_version_MT4" class="radio">MT4</label>
+		                </div>
+		                
+		                <div class="field-group">
+		                    <input type="radio" class="input-radio" value="MT5" name="yourpropfirm_mt_version" aria-required="true" id="yourpropfirm_mt_version_MT5">
+		                    <label for="yourpropfirm_mt_version_MT5" class="radio">MT5</label>
+		                </div>
+		                
+		                <div class="field-group">
+		                    <input type="radio" class="input-radio" value="CTrader" name="yourpropfirm_mt_version" aria-required="true" id="yourpropfirm_mt_version_CTrader">
+		                    <label for="yourpropfirm_mt_version_CTrader" class="radio">CTrader</label>
+		                </div>
+		            </div>
+        		</div>		        
 
 		        <div class="d-flex justify-content-center my-4">
 				    <div class="card text-white bg-dark p-3 shadow-sm" style="width: 80%;">

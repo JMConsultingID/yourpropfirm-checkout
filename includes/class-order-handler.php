@@ -24,25 +24,12 @@ class Yourpropfirm_Checkout_Order_Handler {
         add_action('wp_ajax_nopriv_ypf_process_checkout', [$this, 'handle_form_submission']);
         add_action('template_redirect', [$this, 'clear_notices_on_order_pay']);
         add_action('init', [$this, 'init_session']);
-        add_action('woocommerce_payment_complete', 'track_affiliatewp_referral_after_payment');
-        // Register hooks for order status updates
-        add_action('woocommerce_order_status_processing', [$this, 'update_affiliatewp_referral_status'], 10, 1);
-        add_action('woocommerce_order_status_completed', [$this, 'update_affiliatewp_referral_status'], 10, 1);
-        add_action('woocommerce_order_status_cancelled', [$this, 'update_affiliatewp_referral_status'], 10, 1);
     }
 
     public function init_session() {
         if (!is_admin() && !WC()->session) {
             WC()->session = new WC_Session_Handler();
             WC()->session->init();
-        }
-    }
-
-    public function track_affiliatewp_referral_after_payment($order_id) {
-        // Check if AffiliateWP is active
-        if (function_exists('affiliate_wp')) {
-            // Track the conversion
-            affiliate_wp()->tracking->track_conversion($order_id);
         }
     }
 
@@ -161,36 +148,21 @@ class Yourpropfirm_Checkout_Order_Handler {
             // Calculate totals
             $order->calculate_totals();
 
-            // Save the order
-            $order->save();
-
-            if (function_exists('affiliate_wp')) {
-                // Add referral logic for AffiliateWP
-                affiliate_wp()->integrations->get_integration('woocommerce')->add_referral($order->get_id());
-
-                // Optionally mark the referral as unpaid (AffiliateWP will manage its lifecycle)
-                affiliate_wp()->referrals->update_referral(
-                    $order->get_id(),
-                    ['status' => 'unpaid']
-                );
-            }
-
-            // Trigger WooCommerce hooks for AffiliateWP and other plugins
-            do_action('woocommerce_checkout_order_processed', $order->get_id(), $_POST, $order);
-            do_action('woocommerce_thankyou', $order->get_id());
-
             // Set appropriate status and redirect based on total
             if ($order->get_total() == 0) {
                 $order->update_status('completed');
                 $order->payment_complete();
                 $response['redirect'] = $order->get_checkout_order_received_url();
             } else {
-                $order->update_status('pending');
+                $order->update_status('on-hold');
                 $response['redirect'] = add_query_arg(
                     ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
                     $order->get_checkout_payment_url()
                 );
             }
+
+            // Save the order
+            $order->save();
 
             // Clear cart and session data
             WC()->cart->empty_cart();
@@ -202,38 +174,6 @@ class Yourpropfirm_Checkout_Order_Handler {
         } catch (Exception $e) {
             wc_add_notice($e->getMessage(), 'error');
             wp_send_json($response);
-        }
-    }
-
-    /**
-     * Update AffiliateWP referral status based on WooCommerce order status.
-     *
-     * @param int $order_id WooCommerce order ID.
-     */
-    public function update_affiliatewp_referral_status($order_id) {
-        if (!function_exists('affiliate_wp')) {
-            return; // Exit if AffiliateWP is not active.
-        }
-
-        $order = wc_get_order($order_id);
-        if (!$order) {
-            return; // Exit if order does not exist.
-        }
-
-        // Update referral status based on order status.
-        $status = $order->get_status();
-        if (in_array($status, ['processing', 'completed'], true)) {
-            // Mark referral as "paid" for these statuses.
-            affiliate_wp()->referrals->update_referral(
-                $order_id,
-                ['status' => 'paid']
-            );
-        } elseif ($status === 'cancelled') {
-            // Reject referral for cancelled orders.
-            affiliate_wp()->referrals->update_referral(
-                $order_id,
-                ['status' => 'rejected']
-            );
         }
     }
 

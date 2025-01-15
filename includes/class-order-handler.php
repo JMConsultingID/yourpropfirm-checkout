@@ -154,7 +154,7 @@ class Yourpropfirm_Checkout_Order_Handler {
                 $order->payment_complete();
                 $response['redirect'] = $order->get_checkout_order_received_url();
             } else {
-                $order->update_status('on-hold');
+                $order->update_status('pending');
                 $response['redirect'] = add_query_arg(
                     ['pay_for_order' => 'true', 'key' => $order->get_order_key()],
                     $order->get_checkout_payment_url()

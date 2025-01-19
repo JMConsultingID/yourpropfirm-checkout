@@ -20,6 +20,9 @@ class Yourpropfirm_Checkout_Woocommerce {
         // Modify checkout fields
         add_filter('woocommerce_checkout_fields', [$this, 'ypf_customize_checkout_fields']);
 
+     	// Add MT_Version after the billing form.
+        add_action('woocommerce_after_checkout_billing_form', [$this, 'mt_version_after_checkout_billing']);
+
         // Set order status based on total at checkout
         add_action('woocommerce_checkout_order_processed', [$this, 'ypf_set_order_status_based_on_total'], 10, 3);
 
@@ -116,6 +119,41 @@ class Yourpropfirm_Checkout_Woocommerce {
         ];
 
         return $fields;
+    }
+
+    /**
+     * Add MT_Version after the billing form.
+     */
+    public function mt_version_after_checkout_billing() {
+        ?>
+        <div class="col-12 mb-3 mt-5 text-center">
+            <label class="form-label">
+                <?php esc_html_e('Trading Platforms', 'yourpropfirm-checkout'); ?> <span class="text-danger">*</span>
+            </label>
+            <div class="d-flex justify-content-center gap-4">
+                <div class="form-check">
+                    <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT4" value="MT4" checked>
+                    <label class="form-check-label" for="yourpropfirm_mt_version_MT4">
+                        <?php esc_html_e('MT4', 'yourpropfirm-checkout'); ?>
+                    </label>
+                </div>
+                
+                <div class="form-check">
+                    <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT5" value="MT5">
+                    <label class="form-check-label" for="yourpropfirm_mt_version_MT5">
+                        <?php esc_html_e('MT5', 'yourpropfirm-checkout'); ?>
+                    </label>
+                </div>
+                
+                <div class="form-check">
+                    <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_CTrader" value="CTrader">
+                    <label class="form-check-label" for="yourpropfirm_mt_version_CTrader">
+                        <?php esc_html_e('CTrader', 'yourpropfirm-checkout'); ?>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <?php
     }
 
     /**

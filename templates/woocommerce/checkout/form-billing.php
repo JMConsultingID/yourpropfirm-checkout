@@ -40,35 +40,8 @@ defined( 'ABSPATH' ) || exit;
 		}
 		?>
 	</div>
-	<?php do_action( 'woocommerce_after_checkout_billing_form', $checkout ); ?>
 
-	<div class="col-12 mb-3 mt-5 text-center">
-	    <label class="form-label">
-	        Trading Platforms <span class="text-danger">*</span>
-	    </label>
-	    <div class="d-flex justify-content-center gap-4">
-	        <div class="form-check">
-	            <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT4" value="MT4" checked>
-	            <label class="form-check-label" for="yourpropfirm_mt_version_MT4">
-	                MT4
-	            </label>
-	        </div>
-	        
-	        <div class="form-check">
-	            <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_MT5" value="MT5">
-	            <label class="form-check-label" for="yourpropfirm_mt_version_MT5">
-	                MT5
-	            </label>
-	        </div>
-	        
-	        <div class="form-check">
-	            <input class="form-check-input mt-3 me-3" type="radio" name="yourpropfirm_mt_version" id="yourpropfirm_mt_version_CTrader" value="CTrader">
-	            <label class="form-check-label" for="yourpropfirm_mt_version_CTrader">
-	                CTrader
-	            </label>
-	        </div>
-	    </div>
-	</div>
+	<?php do_action( 'woocommerce_after_checkout_billing_form', $checkout ); ?>
 </div>
 
 <?php if ( ! is_user_logged_in() && $checkout->is_registration_enabled() ) : ?>

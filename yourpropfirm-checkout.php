@@ -59,6 +59,7 @@ class Yourpropfirm_Checkout {
     private function includes() {
         require_once YPF_CHECKOUT_DIR . 'includes/class-admin-panel.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-order-handler.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-checkout-woocommerce.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-shortcodes.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-redirects.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-single-product-checkout.php';

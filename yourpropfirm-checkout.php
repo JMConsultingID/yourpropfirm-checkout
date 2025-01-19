@@ -57,6 +57,7 @@ class Yourpropfirm_Checkout {
      * Include core functionality files.
      */
     private function includes() {
+        require_once YPF_CHECKOUT_DIR . 'includes/class-admin-panel.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-order-handler.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-shortcodes.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-redirects.php';
@@ -68,6 +69,7 @@ class Yourpropfirm_Checkout {
      */
     private function init() {
         // Instantiate the classes.
+        new YourPropFirm_Admin_Panel();
         new YourPropfirm_Single_Product_Checkout();
         new Yourpropfirm_Checkout_Order_Handler();
         new Yourpropfirm_Checkout_Shortcodes();

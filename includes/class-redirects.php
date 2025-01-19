@@ -39,9 +39,10 @@ class Yourpropfirm_Checkout_Redirects {
 
     public function ypf_override_templates($template, $template_name, $template_path) {
         // Array of templates to override
-        $override_templates = [
+        $override_templates = [        
+            'checkout/form-checkout.php',
+            'checkout/form-billing.php',
             'checkout/form-pay.php',
-            'checkout/form-checkout.php'
         ];
 
         // Check if the requested template is in our override list

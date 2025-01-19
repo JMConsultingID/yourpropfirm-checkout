@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 class YourPropFirm_Admin_Panel {
     public function __construct() {
         // Hook to add the submenu under the existing menu.
-        add_action('admin_menu', [$this, 'add_admin_menu']);
+        add_action('admin_menu', [$this, 'add_admin_menu'], 20);
         
         // Hook to save the settings.
         add_action('admin_init', [$this, 'register_settings']);

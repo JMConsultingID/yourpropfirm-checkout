@@ -20,7 +20,7 @@ class YourPropFirm_Helper {
     /**
      * Enqueue CSS and JS for the billing form.
      */
-    public function enqueue_assets() { 
+    public function ypf_enqueue_scripts() { 
         $checkout_type = get_option('yourpropfirm_checkout_type', 'default'); // Default to 'default'.            
 
         // Enqueue Bootstrap 5 CSS

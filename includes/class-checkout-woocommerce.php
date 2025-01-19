@@ -24,7 +24,7 @@ class Yourpropfirm_Checkout_Woocommerce {
         add_filter('woocommerce_checkout_fields', [$this, 'ypf_customize_checkout_fields']);
 
      	// Add MT_Version after the billing form.
-        add_action('woocommerce_checkout_after_customer_details', [$this, 'mt_version_after_checkout_billing']);
+        add_action('woocommerce_before_checkout_billing_form', [$this, 'mt_version_after_checkout_billing']);
 
         // Set order status based on total at checkout
         add_action('woocommerce_checkout_order_processed', [$this, 'ypf_set_order_status_based_on_total'], 10, 3);

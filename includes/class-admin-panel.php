@@ -1,5 +1,4 @@
 <?php
-<?php
 /**
  * Plugin functions and definitions for Admin.
  *

@@ -40,6 +40,7 @@ defined( 'ABSPATH' ) || exit;
 		}
 		?>
 	</div>
+	<?php do_action( 'woocommerce_after_checkout_billing_form', $checkout ); ?>
 
 	<div class="col-12 mb-3 mt-5 text-center">
 	    <label class="form-label">
@@ -67,9 +68,7 @@ defined( 'ABSPATH' ) || exit;
 	            </label>
 	        </div>
 	    </div>
-	</div>	
-
-	<?php do_action( 'woocommerce_after_checkout_billing_form', $checkout ); ?>
+	</div>
 </div>
 
 <?php if ( ! is_user_logged_in() && $checkout->is_registration_enabled() ) : ?>

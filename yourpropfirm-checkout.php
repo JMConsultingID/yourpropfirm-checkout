@@ -58,6 +58,7 @@ class Yourpropfirm_Checkout {
      */
     private function includes() {
         require_once YPF_CHECKOUT_DIR . 'includes/class-admin-panel.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-helper.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-order-handler.php';        
         require_once YPF_CHECKOUT_DIR . 'includes/class-shortcodes.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-redirects.php';
@@ -81,6 +82,7 @@ class Yourpropfirm_Checkout {
             // Load single product checkout and redirects.
             new YourPropfirm_Single_Product_Checkout();
             new Yourpropfirm_Checkout_Redirects();
+            new YourPropFirm_Helper();
 
             if ($checkout_type === 'default') {
                 new Yourpropfirm_Checkout_Woocommerce();

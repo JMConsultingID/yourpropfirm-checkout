@@ -2,73 +2,121 @@
     'use strict';
 
     jQuery(document).ready(function($) {
-       // Handle form submission
-        $('#ypf-billing-form').on('submit', function (e) {
-            const form = this;
+        const form = $('#ypf-billing-form');
+        const submitButton = $('#ypf-submit-button');
+        const savedState = ypf_data.saved_state;
+        const savedCountry = ypf_data.saved_country;
 
-            // Bootstrap validation: Check form validity
-            if (!form.checkValidity()) {
-                e.preventDefault(); // Prevent submission if form is invalid
-                e.stopPropagation(); // Stop further event propagation
-                form.classList.add('was-validated'); // Add Bootstrap validation class
-                return false;
-            }
-
-            // Custom validation: Terms and Privacy Policy checkboxes
-            const termsCheckbox = $('#terms');
-            const privacyCheckbox = $('#privacy_policy');
-
-            if (!termsCheckbox.is(':checked') || !privacyCheckbox.is(':checked')) {
-                e.preventDefault(); // Prevent submission
-                e.stopPropagation();
-
-                // Show error messages for unchecked checkboxes
-                if (!termsCheckbox.is(':checked')) {
-                    alert('Please accept the Terms and Conditions to proceed.');
-                }
-                if (!privacyCheckbox.is(':checked')) {
-                    alert('Please accept the Privacy Policy to proceed.');
-                }
-
-                return false;
-            }
-
-            // If all validations pass, set target to open in a new tab
-            $(this).attr('target', '_blank');
-
-            // Perform delayed actions in the current tab
-            setTimeout(function () {
-                // Clear all form fields
-                $('#ypf-billing-form').find('input, select').val('');
-
-                // Redirect to the home page in the current tab
-                window.location.href = ypf_data.home_url;
-            }, 2000); // 2-second delay
-        });
-
-        // Handle dynamic state selection or input
-        $('#country').on('change', function () {
-            const country = $(this).val(); // Selected country code
-            const states = ypf_data.states; // Get states from localized data
-
-            // Clear any existing state field
-            $('#state-container').empty();
-
+        // First set the saved country if it exists
+        if (savedCountry) {
+            $('#country').val(savedCountry);
+        }
+        
+        function updateStateField(initialLoad = false) {
+            const country = $('#country').val();
+            const states = ypf_data.states;
+            const container = $('#state-container');
+            
+            container.empty();
+            
             if (states[country] && Object.keys(states[country]).length) {
-                // Create a dropdown if states exist
-                let options = '<option value="">' + ypf_data.select_state_text + '</option>';
-                $.each(states[country], function(key, value) {
-                    options += '<option value="' + key + '">' + value + '</option>';
+                // Create select field for states
+                let select = $('<select>', {
+                    name: 'state',
+                    id: 'state',
+                    class: 'form-select',
+                    required: true
                 });
-                $('#state-container').append('<select name="state" id="state" required>' + options + '</select>');
+                
+                // Add default option
+                select.append($('<option>', {
+                    value: '',
+                    text: ypf_data.select_state_text
+                }));
+                
+                // Add state options
+                $.each(states[country], function(code, name) {
+                    let option = $('<option>', {
+                        value: code,
+                        text: name
+                    });
+                    
+                    // Select the saved state if it matches
+                    if (savedState && savedState === code) {
+                        option.prop('selected', true);
+                    }
+                    
+                    select.append(option);
+                });
+                
+                container.append(select);
             } else {
-                // Create a text input if no states exist
-                $('#state-container').append('<input type="text" name="state" id="state" placeholder="' + ypf_data.enter_state_text + '" required>');
+                // Create text input for states
+                let input = $('<input>', {
+                    type: 'text',
+                    name: 'state',
+                    id: 'state',
+                    class: 'form-control',
+                    required: true,
+                    placeholder: ypf_data.enter_state_text,
+                    value: savedState || '' // Always set saved state for text input
+                });
+                
+                container.append(input);
             }
+        }
+
+        // Handle country change
+        $('#country').on('change', function() {
+            updateStateField(false);
         });
 
-        // Trigger change event on page load to initialize the state field
-        $('#country').trigger('change');
+        // Initialize the state field
+        setTimeout(function() {
+            updateStateField(true);
+        }, 100);
+
+        form.on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'ypf_process_checkout');
+            formData.append('nonce', ypf_data.checkout_nonce);
+
+            if (!form[0].checkValidity()) {
+                e.stopPropagation();
+                form.addClass('was-validated');
+                return;
+            }
+
+            $.ajax({
+                url: ypf_data.ajax_url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Open payment page in new tab
+                        window.open(response.redirect, '_blank');
+                        
+                        // Clear form and redirect current page after delay
+                        setTimeout(function() {
+                            form[0].reset();
+                            window.location.href = ypf_data.home_url;
+                        }, 2000);
+                    } else {
+                        window.location.reload();
+                    }
+                },
+                error: function() {
+                    window.location.reload();
+                },
+                complete: function() {
+                    submitButton.prop('disabled', false);
+                }
+            });
+        });       
     });
 
 })( jQuery );

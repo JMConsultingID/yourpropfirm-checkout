@@ -21,9 +21,19 @@ class Yourpropfirm_Checkout_Shortcodes {
      * Constructor: Register the shortcode.
      */
     public function __construct() {
+        add_filter('woocommerce_checkout_show_terms', '__return_false');
+        add_action('init', [$this, 'remove_terms_and_conditions']);
         add_shortcode('ypf_custom_billing_form', [$this, 'render_billing_form']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
     }
+    /**
+     * Remove terms and conditions actions from the WooCommerce checkout.
+     */
+    public function remove_terms_and_conditions() {
+        remove_action('woocommerce_checkout_terms_and_conditions', 'wc_checkout_privacy_policy_text', 20);
+        remove_action('woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30);
+    }
+    
     /**
      * Enqueue CSS and JS for the billing form.
      */

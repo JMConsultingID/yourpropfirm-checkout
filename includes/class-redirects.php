@@ -23,8 +23,40 @@ class Yourpropfirm_Checkout_Redirects {
      * Constructor: Hook into WooCommerce template redirect.
      */
     public function __construct() {
+        add_filter('woocommerce_locate_template', [$this, 'ypf_override_templates'], 10, 3);
         add_action('template_redirect', [$this, 'redirect_default_checkout']);
         add_action('wp_footer', [$this, 'yourpropfirm_checkout_affiliate_redirect_by_page_id'], 10);
+    }
+
+    /**
+     * Override WooCommerce templates
+     *
+     * @param string $template
+     * @param string $template_name
+     * @param string $template_path
+     * @return string
+     */
+
+    public function ypf_override_templates($template, $template_name, $template_path) {
+        // Array of templates to override
+        $override_templates = [
+            'checkout/form-pay.php',
+            'checkout/form-checkout.php'
+        ];
+
+        // Check if the requested template is in our override list
+        if (in_array($template_name, $override_templates)) {
+            // Define the path to the plugin's custom template
+            $plugin_template = YPF_CHECKOUT_DIR . 'templates/woocommerce/' . $template_name;
+
+            // Return the plugin template if it exists
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
+            }
+        }
+
+        // Return the original template if no override
+        return $template;
     }
 
     /**
@@ -33,7 +65,8 @@ class Yourpropfirm_Checkout_Redirects {
     public function redirect_default_checkout() {
         if ( class_exists( 'WooCommerce' ) ) {
         // Check if WooCommerce checkout page is being accessed.
-            if (is_checkout() && !is_wc_endpoint_url() && !isset($_GET['pay_for_order'])) {
+            $checkout_type = get_option('yourpropfirm_checkout_type', 'default'); // Default to 'default'.
+            if ($checkout_type === 'custom' && is_checkout() && !is_wc_endpoint_url() && !isset($_GET['pay_for_order'])) {
                 $custom_checkout_url = home_url('/order/');
                 // Clear WooCommerce notices.
     	        wc_clear_notices();

@@ -26,8 +26,8 @@ class YourPropFirm_Admin_Panel {
     public function add_admin_menu() {
         add_submenu_page(
             'yourpropfirm_dashboard', // Parent menu slug
-            __('YourPropFirm Checkout', 'yourpropfirm-checkout'), // Page title
-            __('YourPropFirm Checkout', 'yourpropfirm-checkout'), // Menu title
+            'YourPropFirm Checkout',
+            'YourPropFirm Checkout', 
             'manage_options', // Capability required
             'yourpropfirm-checkout', // Submenu slug
             [$this, 'render_admin_page'] // Callback function to display the page

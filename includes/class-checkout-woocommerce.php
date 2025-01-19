@@ -17,11 +17,14 @@ class Yourpropfirm_Checkout_Woocommerce {
         // Disable payment options on checkout page
         add_filter('woocommerce_cart_needs_payment', '__return_false');
 
+        // Add Heading before checkout form.
+        add_filter('woocommerce_before_checkout_form', [$this, 'ypf_heading_woocommerce_before_checkout_form']);        
+
         // Modify checkout fields
         add_filter('woocommerce_checkout_fields', [$this, 'ypf_customize_checkout_fields']);
 
      	// Add MT_Version after the billing form.
-        add_action('woocommerce_after_checkout_billing_form', [$this, 'mt_version_after_checkout_billing']);
+        add_action('woocommerce_checkout_after_customer_details', [$this, 'mt_version_after_checkout_billing']);
 
         // Set order status based on total at checkout
         add_action('woocommerce_checkout_order_processed', [$this, 'ypf_set_order_status_based_on_total'], 10, 3);
@@ -31,9 +34,38 @@ class Yourpropfirm_Checkout_Woocommerce {
 
         // Ensure completed orders remain completed
         add_filter('woocommerce_payment_complete_order_status', [$this, 'ypf_ensure_completed_orders_remain_completed'], 10, 3);
-    }
+    }   
 
     /**
+     * Add Heading before checkout form.
+     */
+    public function ypf_heading_woocommerce_before_checkout_form() {
+        ?>
+	    <div class="yourpropfirm-checkout-step mt-4">
+		    <div class="ypf-steps mb-4">
+			    <div class="step-card">
+			        <!-- Current Step -->
+			        <div class="current-step-container">
+			            <div class="step-label">You Are Here</div>
+			            <div class="step-text">
+			                <span>1.</span>Billing Information
+			            </div>
+			        </div>
+
+			        <!-- Next Step -->
+			        <div class="next-step-container">
+			            <div class="step-label">Next Step</div>
+			            <div class="step-text">
+			                <span>2.</span>Review Order & Payment
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		</div>
+	<?php
+	}
+
+	/**
      * Customize WooCommerce checkout fields
      *
      * @param array $fields

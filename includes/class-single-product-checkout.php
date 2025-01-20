@@ -64,16 +64,16 @@ class YourPropfirm_Single_Product_Checkout {
      */
     public function remove_previous_product($cart_item_key, $product_id) {
         // Loop through the cart and remove all other products
-        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+        foreach (WC()->cart->get_cart() as $key => $cart_item) {
             if ($cart_item['product_id'] != $product_id) {
-                WC()->cart->remove_cart_item($cart_item_key);
+                WC()->cart->remove_cart_item($key);
+            } else {
+                // Ensure the quantity is set to 1
+                if ($cart_item['quantity'] > 1) {
+                    WC()->cart->set_quantity($key, 1);
+                }
             }
         }
-
-        // Set the quantity to 1 for the new product
-        $cart_item_data['quantity'] = 1;
-
-        return $cart_item_data;
     }
 
 

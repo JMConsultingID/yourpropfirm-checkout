@@ -235,15 +235,6 @@ class Yourpropfirm_Checkout_Woocommerce {
         </div>';
     }
 
-    add_filter('woocommerce_checkout_show_terms', function($show_terms) {
-        // Check if we are on the order-pay page
-        if (is_wc_endpoint_url('order-pay')) {
-            return false; // Disable the terms and conditions checkbox
-        }
-        return $show_terms;
-    });
-
-
     /**
      * Set order status based on total at checkout
      *

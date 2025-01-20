@@ -26,6 +26,9 @@ class YourPropfirm_Single_Product_Checkout {
         // Disable add to cart messages.
         add_filter('wc_add_to_cart_message_html', '__return_false');
 
+        // Remove previous product before adding a new one.
+        add_filter('woocommerce_add_to_cart', [$this, 'remove_previous_product'], 10, 2);
+
         // Empty the cart before adding a new product.
         //add_filter('woocommerce_add_cart_item_data', [$this, 'empty_cart_before_adding_product']);
 
@@ -54,6 +57,19 @@ class YourPropfirm_Single_Product_Checkout {
     public function empty_cart_before_adding_product($cart_item_data) {
         WC()->cart->empty_cart(); // Clear the cart.
         return $cart_item_data;
+    }
+
+    /**
+     * Remove the previous product before adding a new one.
+     */
+    public function remove_previous_product($cart_item_key, $product_id) {
+        $cart = WC()->cart->get_cart();
+
+        foreach ($cart as $key => $item) {
+            if ((int) $item['product_id'] !== (int) $product_id) {
+                WC()->cart->remove_cart_item($key); // Remove the previous product.
+            }
+        }
     }
 
     /**

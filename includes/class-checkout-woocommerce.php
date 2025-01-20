@@ -27,10 +27,10 @@ class Yourpropfirm_Checkout_Woocommerce {
         add_action('woocommerce_after_checkout_billing_form', [$this, 'mt_version_after_checkout_billing']);
 
         // Coupon Code Action.
-        add_action('woocommerce_checkout_init', 'ypf_checkout_move_coupon_field_below_order_review');
-        add_action('wp_ajax_apply_coupon_action', 'ypf_checkout_apply_coupon_action');
-        add_action('wp_ajax_nopriv_apply_coupon_action', 'ypf_checkout_apply_coupon_action');
-        add_action('woocommerce_review_order_before_payment', 'ypf_checkout_add_coupon_form_before_payment');
+        add_action('woocommerce_checkout_init', [$this, 'ypf_checkout_move_coupon_field_below_order_review']);
+        add_action('wp_ajax_apply_coupon_action', [$this, 'ypf_checkout_apply_coupon_action']);
+        add_action('wp_ajax_nopriv_apply_coupon_action', [$this, 'ypf_checkout_apply_coupon_action']);
+        add_action('woocommerce_review_order_before_payment', [$this, 'ypf_checkout_add_coupon_form_before_payment']);
 
         // Set order status based on total at checkout
         add_action('woocommerce_checkout_order_processed', [$this, 'ypf_set_order_status_based_on_total'], 10, 3);

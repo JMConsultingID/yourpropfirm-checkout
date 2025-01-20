@@ -32,6 +32,9 @@ class Yourpropfirm_Checkout_Woocommerce {
         add_action('wp_ajax_nopriv_apply_coupon_action', [$this, 'ypf_checkout_apply_coupon_action']);
         add_action('woocommerce_review_order_before_payment', [$this, 'ypf_checkout_add_coupon_form_before_payment']);
 
+        // Remove terms and conditions checkbox on order-pay page
+        add_filter('woocommerce_checkout_show_terms', [$this, 'remove_terms_and_conditions_on_order_pay']);
+
         // Set order status based on total at checkout
         add_action('woocommerce_checkout_order_processed', [$this, 'ypf_set_order_status_based_on_total'], 10, 3);
 
@@ -226,11 +229,20 @@ class Yourpropfirm_Checkout_Woocommerce {
         echo '<div class="yourpropfirm-checkout-coupon-form text-center">
             <label for="coupon_code_field" style="display: block; margin-bottom: 15px;">If you have a coupon code, please apply it below.</label>
             <div style="display: flex; align-items: center; gap: 10px;">
-                <input type="text" id="coupon_code_field" name="coupon_code" placeholder="Apply Coupon Code"/>
+                <input type="text" id="coupon_code_field" class="input-text input-text" name="coupon_code" placeholder="Apply Coupon Code"/>
                 <button type="button" id="apply_coupon_button">Apply Coupon</button>
             </div>
         </div>';
     }
+
+    add_filter('woocommerce_checkout_show_terms', function($show_terms) {
+        // Check if we are on the order-pay page
+        if (is_wc_endpoint_url('order-pay')) {
+            return false; // Disable the terms and conditions checkbox
+        }
+        return $show_terms;
+    });
+
 
     /**
      * Set order status based on total at checkout
@@ -290,5 +302,18 @@ class Yourpropfirm_Checkout_Woocommerce {
             return 'pending'; // Keep pending for unpaid orders
         }
         return $status; // Return default status for other cases
+    }
+
+    /**
+     * Remove terms and conditions checkbox on order-pay page
+     *
+     * @param bool $show_terms
+     * @return bool
+     */
+    public function remove_terms_and_conditions_on_order_pay($show_terms) {
+        if (is_wc_endpoint_url('order-pay')) {
+            return false;
+        }
+        return $show_terms;
     }
 }

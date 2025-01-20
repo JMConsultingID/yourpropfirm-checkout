@@ -63,26 +63,18 @@ class YourPropfirm_Single_Product_Checkout {
      * Remove the previous product before adding a new one.
      */
     public function remove_previous_product($cart_item_key, $product_id) {
-        $found = false;
-
-        // Loop through the cart to handle products
+        // Loop through the cart and remove all other products
         foreach (WC()->cart->get_cart() as $key => $cart_item) {
-            if ($cart_item['product_id'] == $product_id) {
-                // If the product already exists, set its quantity to 1
-                if (!$found) {
-                    WC()->cart->set_quantity($key, 1); // Keep the first instance and set quantity to 1
-                    $found = true;
-                } else {
-                    // Remove duplicate entries of the same product
-                    WC()->cart->remove_cart_item($key);
-                }
-            } else {
-                // Remove all other products
+            if ($cart_item['product_id'] != $product_id) {
                 WC()->cart->remove_cart_item($key);
+            } else {
+                // Ensure the quantity is set to 1
+                if ($cart_item['quantity'] > 1) {
+                    WC()->cart->set_quantity($key, 1);
+                }
             }
         }
     }
-
 
 
     /**

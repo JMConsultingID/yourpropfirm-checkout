@@ -27,7 +27,7 @@ class YourPropfirm_Single_Product_Checkout {
         add_filter('wc_add_to_cart_message_html', '__return_false');
 
         // Remove previous product before adding a new one.
-        add_filter('woocommerce_add_to_cart', [$this, 'remove_previous_product'], 10, 2);
+        add_filter('woocommerce_add_cart_item_data', [$this, 'remove_previous_product'], 10, 2);
 
         // Empty the cart before adding a new product.
         //add_filter('woocommerce_add_cart_item_data', [$this, 'empty_cart_before_adding_product']);
@@ -63,14 +63,19 @@ class YourPropfirm_Single_Product_Checkout {
      * Remove the previous product before adding a new one.
      */
     public function remove_previous_product($cart_item_key, $product_id) {
-        $cart = WC()->cart->get_cart();
-
-        foreach ($cart as $key => $item) {
-            if ((int) $item['product_id'] !== (int) $product_id) {
-                WC()->cart->remove_cart_item($key); // Remove the previous product.
+        // Loop through the cart and remove all other products
+        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+            if ($cart_item['product_id'] != $product_id) {
+                WC()->cart->remove_cart_item($cart_item_key);
             }
         }
+
+        // Set the quantity to 1 for the new product
+        $cart_item_data['quantity'] = 1;
+
+        return $cart_item_data;
     }
+
 
     /**
      * Redirect to checkout after adding a product to the cart.

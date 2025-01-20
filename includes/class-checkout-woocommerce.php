@@ -26,6 +26,12 @@ class Yourpropfirm_Checkout_Woocommerce {
      	// Add MT_Version after the billing form.
         add_action('woocommerce_after_checkout_billing_form', [$this, 'mt_version_after_checkout_billing']);
 
+        // Coupon Code Action.
+        add_action('woocommerce_checkout_init', 'ypf_checkout_move_coupon_field_below_order_review');
+        add_action('wp_ajax_apply_coupon_action', 'ypf_checkout_apply_coupon_action');
+        add_action('wp_ajax_nopriv_apply_coupon_action', 'ypf_checkout_apply_coupon_action');
+        add_action('woocommerce_review_order_before_payment', 'ypf_checkout_add_coupon_form_before_payment');
+
         // Set order status based on total at checkout
         add_action('woocommerce_checkout_order_processed', [$this, 'ypf_set_order_status_based_on_total'], 10, 3);
 
@@ -186,6 +192,44 @@ class Yourpropfirm_Checkout_Woocommerce {
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Set Coupon Code at checkout
+     */
+
+    public function ypf_checkout_move_coupon_field_below_order_review()
+    {
+        remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10);
+    }
+
+    public function ypf_checkout_apply_coupon_action()
+    {
+        if (!isset($_POST['coupon_code'])) {
+            wp_send_json_error('Coupon code not provided.');
+        }
+
+        $coupon_code = sanitize_text_field($_POST['coupon_code']);
+        WC()->cart->add_discount($coupon_code);
+
+        if (wc_notice_count('error') > 0) {
+            $errors = wc_get_notices('error');
+            wc_clear_notices();
+            wp_send_json_error(join(', ', wp_list_pluck($errors, 'notice')));
+        }
+
+        wp_send_json_success();
+    }
+
+    public function ypf_checkout_add_coupon_form_before_payment()
+    {
+        echo '<div class="hello-theme-coupon-form">
+            <label for="coupon_code_field" style="display: block; margin-bottom: 15px;">If you have a coupon code, please apply it below.</label>
+            <div style="display: flex; align-items: center;">
+                <input type="text" id="coupon_code_field" name="coupon_code" placeholder="Apply Coupon Code"/>
+                <button type="button" id="apply_coupon_button">Apply Coupon</button>
+            </div>
+        </div>';
     }
 
     /**

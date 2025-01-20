@@ -33,7 +33,7 @@ class YourPropfirm_Single_Product_Checkout {
         add_filter('woocommerce_add_to_cart_redirect', [$this, 'redirect_to_checkout']);
 
         // Check for multiple products in the cart at checkout.
-        add_action('woocommerce_before_checkout_form', [$this, 'check_for_multiple_products']);
+        //add_action('woocommerce_before_checkout_form', [$this, 'check_for_multiple_products']);
 
         // Disable order notes field.
         add_filter('woocommerce_enable_order_notes_field', '__return_false');

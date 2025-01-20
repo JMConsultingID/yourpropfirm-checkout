@@ -27,7 +27,7 @@ class YourPropfirm_Single_Product_Checkout {
         add_filter('wc_add_to_cart_message_html', '__return_false');
 
         // Empty the cart before adding a new product.
-        add_filter('woocommerce_add_cart_item_data', [$this, 'empty_cart_before_adding_product']);
+        //add_filter('woocommerce_add_cart_item_data', [$this, 'empty_cart_before_adding_product']);
 
         // Redirect to checkout after adding product.
         add_filter('woocommerce_add_to_cart_redirect', [$this, 'redirect_to_checkout']);

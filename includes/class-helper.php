@@ -54,7 +54,7 @@ class YourPropFirm_Helper {
             wp_enqueue_script('ypf-checkout-woocommerce-js', YPF_CHECKOUT_URL . 'assets/js/yourpropfirm-woocommerce.js', ['jquery'], YPF_CHECKOUT_VERSION, true);
 
             // Localize script for Coupon Ajax
-            wp_enqueue_script('ypf-checkout-coupon-ajax', get_stylesheet_directory_uri() . '/assets/js/yourpropfirm-coupon-ajax.js', array('jquery'), YPF_CHECKOUT_VERSION, true);
+            wp_enqueue_script('ypf-checkout-coupon-ajax', YPF_CHECKOUT_URL . '/assets/js/yourpropfirm-coupon-ajax.js', array('jquery'), YPF_CHECKOUT_VERSION, true);
             wp_localize_script('ypf-checkout-coupon-ajax', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
 
             // Localize script for WooCommerce country and state data

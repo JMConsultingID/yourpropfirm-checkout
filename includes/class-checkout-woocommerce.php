@@ -223,7 +223,7 @@ class Yourpropfirm_Checkout_Woocommerce {
 
     public function ypf_checkout_add_coupon_form_before_payment()
     {
-        echo '<div class="yourpropfirm-checkout-coupon-form">
+        echo '<div class="yourpropfirm-checkout-coupon-form text-center">
             <label for="coupon_code_field" style="display: block; margin-bottom: 15px;">If you have a coupon code, please apply it below.</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <input type="text" id="coupon_code_field" name="coupon_code" placeholder="Apply Coupon Code"/>

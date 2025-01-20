@@ -225,7 +225,7 @@ class Yourpropfirm_Checkout_Woocommerce {
     {
         echo '<div class="hello-theme-coupon-form">
             <label for="coupon_code_field" style="display: block; margin-bottom: 15px;">If you have a coupon code, please apply it below.</label>
-            <div style="display: flex; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
                 <input type="text" id="coupon_code_field" name="coupon_code" placeholder="Apply Coupon Code"/>
                 <button type="button" id="apply_coupon_button">Apply Coupon</button>
             </div>

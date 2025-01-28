@@ -92,6 +92,11 @@ class YourPropFirm_Helper {
         // Retrieve restricted category IDs from the admin settings
         $restricted_category_ids = explode(',', get_option('yourpropfirm_restricted_category_ids', ''));
 
+        // If no restricted categories are defined, skip the validation
+        if (empty($restricted_category_ids)) {
+            return;
+        }
+
         // Retrieve all orders made by the customer using their email
         $customer_orders = wc_get_orders([
             'billing_email' => $customer_email,

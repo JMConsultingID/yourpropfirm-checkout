@@ -97,7 +97,7 @@ class YourPropFirm_Helper {
         ]);
 
         // Define the restricted categories (slugs)
-        $restricted_categories = ['instant', 'competition'];
+        $restricted_categories = ['1-step-zar', '2-step-zar'];
 
         // Loop through the items in the cart to check purchase history
         foreach ($cart_items as $cart_item) {

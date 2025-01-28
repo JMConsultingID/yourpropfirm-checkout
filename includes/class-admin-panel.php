@@ -83,6 +83,15 @@ class YourPropFirm_Admin_Panel {
                             <p class="description"><?php esc_html_e('Select the checkout type to use.', 'yourpropfirm-checkout'); ?></p>
                         </td>
                     </tr>
+                    <tr>
+                    <th scope="row">
+                        <label for="yourpropfirm_restricted_category_ids"><?php esc_html_e('Prevent Repurchase by Category IDs', 'yourpropfirm-checkout'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" name="yourpropfirm_restricted_category_ids" id="yourpropfirm_restricted_category_ids" value="<?php echo esc_attr(get_option('yourpropfirm_restricted_category_ids', '')); ?>" class="regular-text">
+                        <p class="description"><?php esc_html_e('Enter the category IDs that should restrict repeated purchases, separated by commas (e.g., 12,34,56).', 'yourpropfirm-checkout'); ?></p>
+                    </td>
+                </tr>
                 </table>
 
                 <?php submit_button(); // Save button ?>
@@ -90,4 +99,13 @@ class YourPropFirm_Admin_Panel {
         </div>
         <?php
     }
+}
+
+function yourpropfirm_render_restricted_category_ids_field() {
+    // Get the saved value from the database
+    $value = get_option('yourpropfirm_restricted_category_ids', '');
+    ?>
+    <input type="text" name="yourpropfirm_restricted_category_ids" value="<?php echo esc_attr($value); ?>" class="regular-text">
+    <p class="description">Enter the category IDs (comma-separated) that are restricted for multiple purchases.</p>
+    <?php
 }

@@ -96,16 +96,16 @@ class YourPropFirm_Helper {
             'limit'         => -1, // Retrieve all matching orders
         ]);
 
-        // Define the restricted categories (slugs)
-        $restricted_categories = ['1-step-zar', '2-step-zar'];
+        // Define the restricted categories by their IDs
+        $restricted_category_ids = explode(',', get_option('yourpropfirm_restricted_category_ids', '')); // Get saved IDs as an array
 
         // Loop through the items in the cart to check purchase history
         foreach ($cart_items as $cart_item) {
             $product_id = $cart_item['product_id'];
 
             // Check if the product belongs to one of the restricted categories
-            $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'slugs']);
-            if (array_intersect($product_categories, $restricted_categories)) {
+            $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
+            if (array_intersect($product_categories, $restricted_category_ids)) {
                 // If the product belongs to a restricted category, check the purchase history
                 foreach ($customer_orders as $order) {
                     foreach ($order->get_items() as $item) {

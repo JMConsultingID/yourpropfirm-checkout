@@ -89,6 +89,9 @@ class YourPropFirm_Helper {
         // Get all items in the cart
         $cart_items = WC()->cart->get_cart();
 
+        // Retrieve restricted category IDs from the admin settings
+        $restricted_category_ids = explode(',', get_option('yourpropfirm_restricted_category_ids', ''));
+
         // Retrieve all orders made by the customer using their email
         $customer_orders = wc_get_orders([
             'billing_email' => $customer_email,
@@ -96,32 +99,47 @@ class YourPropFirm_Helper {
             'limit'         => -1, // Retrieve all matching orders
         ]);
 
-        // Define the restricted categories by their IDs
-        $restricted_category_ids = explode(',', get_option('yourpropfirm_restricted_category_ids', '')); // Get saved IDs as an array
+        // Track purchased categories
+        $purchased_categories = [];
 
-        // Loop through the items in the cart to check purchase history
-        foreach ($cart_items as $cart_item) {
-            $product_id = $cart_item['product_id'];
+        // Check previous orders for restricted categories
+        foreach ($customer_orders as $order) {
+            foreach ($order->get_items() as $item) {
+                $product_id = $item->get_product_id();
 
-            // Check if the product belongs to one of the restricted categories
-            $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
-            if (array_intersect($product_categories, $restricted_category_ids)) {
-                // If the product belongs to a restricted category, check the purchase history
-                foreach ($customer_orders as $order) {
-                    foreach ($order->get_items() as $item) {
-                        if ($item->get_product_id() == $product_id) {
-                            // If the product was already purchased, show an error message and block checkout
-                            wc_add_notice(
-                                sprintf(__('You have already purchased "%s" and cannot buy it again.', 'woocommerce'), $cart_item['data']->get_name()),
-                                'error'
-                            );
-                            return;
-                        }
+                // Get the product's categories
+                $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
+
+                // Check if the product belongs to a restricted category
+                foreach ($restricted_category_ids as $restricted_id) {
+                    if (in_array($restricted_id, $product_categories)) {
+                        $purchased_categories[] = $restricted_id; // Mark the category as purchased
                     }
                 }
             }
         }
+
+        // Prevent checkout if cart contains products from purchased categories
+        foreach ($cart_items as $cart_item) {
+            $product_id = $cart_item['product_id'];
+
+            // Get the product's categories
+            $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
+
+            // Check if the product belongs to a purchased category
+            foreach ($purchased_categories as $purchased_category) {
+                if (in_array($purchased_category, $product_categories)) {
+                    wc_add_notice(
+                        sprintf(
+                            __('You have already purchased a product from the category "%s". You cannot purchase any products from this category again.', 'woocommerce'),
+                            get_term($purchased_category)->name
+                        ),
+                        'error'
+                    );
+                    return;
+                }
+            }
+        }
+
     }
-
-
 }

@@ -15,6 +15,7 @@ class YourPropFirm_Helper {
     public function __construct() {
         add_action('wp_enqueue_scripts', [$this, 'ypf_enqueue_scripts']);
         add_action('init', [$this, 'remove_terms_and_conditions']);
+        add_action('woocommerce_checkout_process', [$this, 'ypf_prevent_repurchase_by_category_at_checkout']);
     }
 
     /**
@@ -72,5 +73,55 @@ class YourPropFirm_Helper {
         remove_action('woocommerce_checkout_terms_and_conditions', 'wc_checkout_privacy_policy_text', 20);
         remove_action('woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30);
     }
+
+    
+
+    public function ypf_prevent_repurchase_by_category_at_checkout() {
+        // Get the customer's email from the checkout form
+        $customer_email = isset($_POST['billing_email']) ? sanitize_email($_POST['billing_email']) : '';
+
+        // If no email is provided, prevent checkout
+        if (empty($customer_email)) {
+            wc_add_notice(__('Please provide your email address to proceed with the checkout.', 'woocommerce'), 'error');
+            return;
+        }
+
+        // Get all items in the cart
+        $cart_items = WC()->cart->get_cart();
+
+        // Retrieve all orders made by the customer using their email
+        $customer_orders = wc_get_orders([
+            'billing_email' => $customer_email,
+            'status'        => ['completed', 'processing'], // Check only completed or processing orders
+            'limit'         => -1, // Retrieve all matching orders
+        ]);
+
+        // Define the restricted categories (slugs)
+        $restricted_categories = ['instant', 'competition'];
+
+        // Loop through the items in the cart to check purchase history
+        foreach ($cart_items as $cart_item) {
+            $product_id = $cart_item['product_id'];
+
+            // Check if the product belongs to one of the restricted categories
+            $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'slugs']);
+            if (array_intersect($product_categories, $restricted_categories)) {
+                // If the product belongs to a restricted category, check the purchase history
+                foreach ($customer_orders as $order) {
+                    foreach ($order->get_items() as $item) {
+                        if ($item->get_product_id() == $product_id) {
+                            // If the product was already purchased, show an error message and block checkout
+                            wc_add_notice(
+                                sprintf(__('You have already purchased "%s" and cannot buy it again.', 'woocommerce'), $cart_item['data']->get_name()),
+                                'error'
+                            );
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
 }

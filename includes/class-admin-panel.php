@@ -41,6 +41,7 @@ class YourPropFirm_Admin_Panel {
         // Register the setting
         register_setting('yourpropfirm_checkout_settings', 'yourpropfirm_checkout_enabled');
         register_setting('yourpropfirm_checkout_settings', 'yourpropfirm_checkout_type');
+        register_setting('yourpropfirm_checkout_settings', 'yourpropfirm_restricted_category_ids');
     }
 
     /**

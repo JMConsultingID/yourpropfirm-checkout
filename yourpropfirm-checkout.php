@@ -86,6 +86,7 @@ class Yourpropfirm_Checkout {
 
             if ($checkout_type === 'default') {
                 new Yourpropfirm_Checkout_Woocommerce();
+                new YourPropfirm_Checkout_Validation();
             } elseif ($checkout_type === 'custom') {
                 new Yourpropfirm_Checkout_Order_Handler();
                 new Yourpropfirm_Checkout_Shortcodes();

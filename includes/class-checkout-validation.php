@@ -7,8 +7,9 @@
  *
  * @package yourpropfirm-checkout
  */
+// Exit if accessed directly.
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+    exit;
 }
 
 /**
@@ -29,8 +30,7 @@ class YourPropfirm_Checkout_Validation {
         'billing_address_1' => 'Address Line 1',
         'billing_address_2' => 'Address Line 2',
         'billing_city' => 'City',
-        'billing_postcode' => 'Postcode',
-        'billing_email' => 'Email'
+        'billing_postcode' => 'Postcode'
     ];
 
     /**
@@ -41,7 +41,7 @@ class YourPropfirm_Checkout_Validation {
     }
 
     /**
-     * Validate checkout fields for non-Latin characters.
+     * Validate checkout fields.
      */
     public function validate_checkout_fields() {
         foreach ($this->fields_to_check as $field_key => $field_label) {
@@ -51,27 +51,57 @@ class YourPropfirm_Checkout_Validation {
 
             $field_value = sanitize_text_field($_POST[$field_key]);
 
-            if ($this->contains_non_latin($field_value)) {
-                wc_add_notice(
-                    sprintf(
-                        /* translators: %s: field name */
-                        __('Only Latin letters (A-Z, a-z) are allowed in the %s field.', 'yourpropfirm-checkout'),
-                        $field_label
-                    ),
-                    'error'
-                );
+            // Allow numbers in Address and Postcode but restrict non-Latin scripts
+            if (in_array($field_key, ['billing_address_1', 'billing_address_2', 'billing_city', 'billing_postcode'])) {
+                if ($this->contains_non_latin_except_numbers($field_value)) {
+                    wc_add_notice(
+                        sprintf(
+                            __('Only Latin letters (A-Z, a-z) and numbers are allowed in the %s field.', 'yourpropfirm-checkout'),
+                            $field_label
+                        ),
+                        'error'
+                    );
+                }
             }
+            // Strictly allow only Latin letters (A-Z, a-z) in First Name and Last Name
+            elseif (in_array($field_key, ['billing_first_name', 'billing_last_name'])) {
+                if ($this->contains_non_latin_letters($field_value)) {
+                    wc_add_notice(
+                        sprintf(
+                            __('Only Latin letters (A-Z, a-z) are allowed in the %s field.', 'yourpropfirm-checkout'),
+                            $field_label
+                        ),
+                        'error'
+                    );
+                }
+            }
+        }
+
+        // Validate email using WooCommerce's built-in email validation
+        if (isset($_POST['billing_email']) && !is_email($_POST['billing_email'])) {
+            wc_add_notice(__('Please enter a valid email address.', 'yourpropfirm-checkout'), 'error');
         }
     }
 
     /**
-     * Check if a string contains non-Latin characters.
+     * Check if a string contains non-Latin letters (strict).
+     * Allows only A-Z and a-z, no numbers.
      *
      * @param string $string The string to check.
      * @return boolean True if contains non-Latin characters, false otherwise.
      */
-    private function contains_non_latin($string) {
+    private function contains_non_latin_letters($string) {
         return preg_match('/[^a-zA-Z\s]/u', $string);
+    }
+
+    /**
+     * Check if a string contains non-Latin characters, but allow numbers.
+     *
+     * @param string $string The string to check.
+     * @return boolean True if contains non-Latin characters, false otherwise.
+     */
+    private function contains_non_latin_except_numbers($string) {
+        return preg_match('/[^a-zA-Z0-9\s]/u', $string);
     }
 
     /**

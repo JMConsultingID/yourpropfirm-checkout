@@ -64,6 +64,7 @@ class Yourpropfirm_Checkout {
         require_once YPF_CHECKOUT_DIR . 'includes/class-redirects.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-single-product-checkout.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-checkout-woocommerce.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-checkout-validation.php';
     }
 
     /**

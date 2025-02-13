@@ -101,3 +101,41 @@ class Yourpropfirm_Checkout {
 
 // Initialize the plugin.
 new Yourpropfirm_Checkout();
+// Register custom query variable
+add_filter('query_vars', 'add_custom_query_vars');
+function add_custom_query_vars($vars) {
+    $vars[] = 'utm_source';
+    return $vars;
+}
+
+// Retrieve custom query parameter and save to session
+add_action('wp', 'get_custom_url_parameter');
+function get_custom_url_parameter() {
+    if (is_checkout()) {
+        $utm_source = get_query_var('utm_source');
+        if (!empty($utm_source)) {
+            WC()->session->set('yourpropfirm_utm', sanitize_text_field($utm_source));
+        }
+    }
+}
+
+// Save session data to order meta
+add_action('woocommerce_checkout_update_order_meta', 'save_utm_to_order_meta');
+function save_utm_to_order_meta($order_id) {
+    if ($utm_source = WC()->session->get('yourpropfirm_utm')) {
+        update_post_meta($order_id, '_yourpropfirm_utm', $utm_source);
+        update_post_meta($order_id, '_yourpropfirm_checkout_utm', $utm_source);
+        
+        // Clear the session data after saving
+        WC()->session->__unset('yourpropfirm_utm');
+    }
+}
+
+// Debugging: Output the query variable
+add_action('wp_footer', 'debug_custom_query_var');
+function debug_custom_query_var() {
+    if (is_checkout()) {
+        $utm_source = get_query_var('utm_source');
+        echo '<pre>UTM Source from Query Var: ' . esc_html($utm_source) . '</pre>';
+    }
+}

@@ -111,7 +111,7 @@ function add_custom_query_vars($vars) {
 // Retrieve custom query parameter and save to session
 add_action('wp', 'get_custom_url_parameter');
 function get_custom_url_parameter() {
-    $utm_source = $_GET['add-to-cart'];
+    $utm_source = sanitize_text_field( wp_unslash( $_GET['utm_source'] ) );
     WC()->session->set('yourpropfirm_set', '1234');
     WC()->session->set('yourpropfirms_utm', $utm_source);
     if (is_checkout()) {

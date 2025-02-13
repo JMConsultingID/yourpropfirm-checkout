@@ -82,16 +82,15 @@ class YourPropFirm_Helper {
 
         // If no email is provided, prevent checkout
         if ( empty( $customer_email ) ) {
-            wc_add_notice( __( 'Please provide your email address to proceed with the checkout.', 'woocommerce' ), 'error' );
+            wc_add_notice(__('Please provide your email address to proceed with the checkout.', 'woocommerce'), 'error');
             return;
         }
 
         // Get all items in the cart
         $cart_items = WC()->cart->get_cart();
 
-        // Retrieve restricted category IDs from the admin settings
-        $restricted_category_ids = explode( ',', get_option( 'yourpropfirm_restricted_category_ids', '' ) );
-        $restricted_category_ids = array_filter( array_map( 'trim', $restricted_category_ids ) );
+        // Retrieve restricted category IDs from the admin settings (as an array)
+        $restricted_category_ids = get_option('yourpropfirm_connection_competition_categories', array());
 
         // If no restricted categories are defined, skip the validation
         if ( empty( $restricted_category_ids ) ) {
@@ -99,13 +98,13 @@ class YourPropFirm_Helper {
         }
 
         // Retrieve all orders made by the customer using their email
-        $customer_orders = wc_get_orders( [
+        $customer_orders = wc_get_orders([
             'billing_email' => $customer_email,
-            'status'        => [ 'completed', 'processing' ], // Only consider completed or processing orders
-            'limit'         => -1, // Retrieve all matching orders
-        ] );
+            'status'        => ['completed', 'processing'], // Only check orders with these statuses
+            'limit'         => -1,
+        ]);
 
-        // Track purchased product IDs (only those in the restricted categories)
+        // Track purchased products (for those in the restricted categories)
         $purchased_products = [];
 
         // Loop through past orders and record purchased products that belong to the restricted categories
@@ -113,10 +112,10 @@ class YourPropFirm_Helper {
             foreach ( $order->get_items() as $item ) {
                 $product_id = $item->get_product_id();
                 // Get the product's categories
-                $product_categories = wc_get_product_terms( $product_id, 'product_cat', [ 'fields' => 'ids' ] );
+                $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
 
-                // If the product belongs to any restricted category, record it
-                if ( array_intersect( $restricted_category_ids, $product_categories ) ) {
+                // If the product belongs to any of the restricted categories, record it
+                if ( array_intersect($restricted_category_ids, $product_categories) ) {
                     $purchased_products[] = $product_id;
                 }
             }
@@ -125,19 +124,15 @@ class YourPropFirm_Helper {
         // Check current cart items against previously purchased products
         foreach ( $cart_items as $cart_item ) {
             $product_id = $cart_item['product_id'];
-
             // Get the product's categories
-            $product_categories = wc_get_product_terms( $product_id, 'product_cat', [ 'fields' => 'ids' ] );
+            $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
 
             // Only validate products within the restricted categories
-            if ( array_intersect( $restricted_category_ids, $product_categories ) ) {
-                if ( in_array( $product_id, $purchased_products ) ) {
-                    $product_title = get_the_title( $product_id );
+            if ( array_intersect($restricted_category_ids, $product_categories) ) {
+                if ( in_array($product_id, $purchased_products) ) {
+                    $product_title = get_the_title($product_id);
                     wc_add_notice(
-                        sprintf(
-                            __( 'You have already purchased "%s". You cannot purchase this product again.', 'woocommerce' ),
-                            $product_title
-                        ),
+                        sprintf(__('You have already purchased "%s". You cannot purchase this product again.', 'woocommerce'), $product_title),
                         'error'
                     );
                     return;
@@ -145,4 +140,5 @@ class YourPropFirm_Helper {
             }
         }
     }
+
 }

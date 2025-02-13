@@ -124,14 +124,12 @@ function save_utm_to_order_meta($order_id) {
     }
 }
 
-add_action('wp_footer', 'check_specific_session_key');
-function check_specific_session_key() {
+add_action('woocommerce_before_checkout_form', 'check_session_on_checkout');
+function check_session_on_checkout() {
     if (function_exists('WC')) {
-        $utm_source = WC()->session->get('yourpropfirm_utm');
-        if ($utm_source) {
-            echo '<pre>UTM Source: ' . esc_html($utm_source) . '</pre>';
-        } else {
-            echo '<pre>UTM Source is not set in the session.</pre>';
-        }
+        $session_data = WC()->session->get_session_data();
+        echo '<pre>Session Data on Checkout Page: ';
+        print_r($session_data);
+        echo '</pre>';
     }
 }

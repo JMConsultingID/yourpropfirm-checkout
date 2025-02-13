@@ -112,14 +112,10 @@ class YourPropFirm_Helper {
      */
     public function ypf_display_session_utm_on_checkout() {
         // Retrieve the UTM value from the WooCommerce session.
-        $utm = WC()->session->get('yourpropfirm_utm');
-        
-        // If the UTM value exists, display it.
-        if ( ! empty( $utm ) ) {
-            echo '<div class="yourpropfirm-utm-display" style="margin-top:20px; padding:10px; border:1px solid #ccc;">';
-            echo '<p><strong>UTM Parameter:</strong> ' . esc_html( $utm ) . '</p>';
-            echo '</div>';
-        }
+        $utm = WC()->session->get('forfx_checkout_utm');
+        echo '<div class="yourpropfirm-utm-display" style="margin-top:20px; padding:10px; border:1px solid #ccc;">';
+        echo '<p><strong>UTM Parameter:</strong> ' . esc_html( $utm ) . '</p>';
+        echo '</div>';
     }  
 
     public function ypf_prevent_repurchase_by_category_at_checkout() {

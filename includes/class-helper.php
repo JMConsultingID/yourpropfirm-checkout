@@ -18,6 +18,7 @@ class YourPropFirm_Helper {
         add_action('woocommerce_checkout_process', [$this, 'ypf_prevent_repurchase_by_category_at_checkout']);
         add_action('template_redirect', [ $this, 'ypf_capture_utm_from_url' ] );
         add_action('woocommerce_checkout_update_order_meta', [ $this, 'ypf_add_utm_to_order_meta' ] );
+        add_action( 'woocommerce_after_checkout_billing_form', [ $this, 'ypf_display_session_utm_on_checkout' ] );
     }
 
     /**
@@ -104,7 +105,22 @@ class YourPropFirm_Helper {
             update_post_meta( $order_id, 'forfx_checkout_utm', $utm );
             update_post_meta( $order_id, '_forfx_checkout_utm', $utm );
         }
-    }    
+    }
+
+    /**
+     * Display the captured UTM parameter on the checkout page after the billing details.
+     */
+    public function ypf_display_session_utm_on_checkout() {
+        // Retrieve the UTM value from the WooCommerce session.
+        $utm = WC()->session->get('yourpropfirm_utm');
+        
+        // If the UTM value exists, display it.
+        if ( ! empty( $utm ) ) {
+            echo '<div class="yourpropfirm-utm-display" style="margin-top:20px; padding:10px; border:1px solid #ccc;">';
+            echo '<p><strong>UTM Parameter:</strong> ' . esc_html( $utm ) . '</p>';
+            echo '</div>';
+        }
+    }  
 
     public function ypf_prevent_repurchase_by_category_at_checkout() {
         // Get the customer's email from the checkout form

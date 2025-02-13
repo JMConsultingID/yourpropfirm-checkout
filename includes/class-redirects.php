@@ -75,6 +75,14 @@ class Yourpropfirm_Checkout_Redirects {
                 exit;
             }
 
+            // Check if the current page is checkout and the "utm" parameter exists in the URL.
+            if ( is_checkout() && isset( $_GET['utm_source'] ) ) {
+                // Sanitize the UTM parameter value.
+                $utm = sanitize_text_field( wp_unslash( $_GET['utm_source'] ) );
+                // Save the UTM value into the WooCommerce session.
+                WC()->session->set( 'forfx_checkout_utm', $utm );
+            }
+
 
             if ( is_page( 'cart' ) || ( isset( $_GET['cancel_order'] ) && $_GET['cancel_order'] === 'true' ) ) {
                 $home_page_url = home_url();

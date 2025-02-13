@@ -106,18 +106,24 @@ class Yourpropfirm_Checkout_Redirects {
             $redirect_referral_url = home_url();
         }
 
-        if (is_front_page() || is_home()) {
+        if ( is_front_page() || is_home() ) {
             ?>
             <script type="text/javascript">
                 document.addEventListener("DOMContentLoaded", function() {
                     setTimeout(function() {
-                        var urlParams = new URLSearchParams(window.location.search);
-                        var refParam = urlParams.get('ref');
+                        // Get current URL without query parameters.
+                        var currentUrl = window.location.origin + window.location.pathname;
                         var redirectUrl = "<?php echo esc_js($redirect_referral_url); ?>";
-                        if (refParam) {
-                            window.location.href = redirectUrl + "?ref=" + refParam;
-                        } else {
-                            window.location.href = redirectUrl;
+                        
+                        // Check if the current URL is different from the redirect URL to avoid infinite loop.
+                        if ( currentUrl !== redirectUrl ) {
+                            var urlParams = new URLSearchParams(window.location.search);
+                            var refParam = urlParams.get('ref');
+                            if ( refParam ) {
+                                window.location.href = redirectUrl + "?ref=" + refParam;
+                            } else {
+                                window.location.href = redirectUrl;
+                            }
                         }
                     }, 10);
                 });
@@ -125,4 +131,5 @@ class Yourpropfirm_Checkout_Redirects {
             <?php
         }
     }
+
 }

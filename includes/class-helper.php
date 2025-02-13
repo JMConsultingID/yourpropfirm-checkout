@@ -13,6 +13,9 @@ if (!defined('ABSPATH')) {
 
 class YourPropFirm_Helper {
     public function __construct() {
+        if ( ! session_id() ) {
+            session_start();
+        }
         add_action('wp_enqueue_scripts', [$this, 'ypf_enqueue_scripts']);
         add_action('init', [$this, 'remove_terms_and_conditions']);
         add_action('woocommerce_checkout_process', [$this, 'ypf_prevent_repurchase_by_category_at_checkout']);
@@ -82,12 +85,18 @@ class YourPropFirm_Helper {
      * and store it in the WooCommerce session.
      */
     public function ypf_capture_utm_from_url() {
-        // Check if the current page is checkout and the "utm" parameter exists in the URL.
+        // Check if we are on the checkout page and the "utm" parameter exists.
         if ( is_checkout() && isset( $_GET['utm_source'] ) ) {
-            // Sanitize the UTM parameter value.
+            // Sanitize the UTM parameter.
             $utm = sanitize_text_field( wp_unslash( $_GET['utm_source'] ) );
-            // Save the UTM value into the WooCommerce session.
-            WC()->session->set( 'forfx_checkout_utm', $utm );
+            
+            // If WooCommerce session is available, use it.
+            if ( function_exists( 'WC' ) && WC()->session ) {
+                WC()->session->set( 'forfx_checkout_utm', $utm );
+            } else {
+                // Fallback to PHP session.
+                $_SESSION['forfx_checkout_utm'] = $utm;
+            }
         }
     }
 
@@ -97,9 +106,16 @@ class YourPropFirm_Helper {
      * @param int $order_id The ID of the newly created order.
      */
     public function ypf_add_utm_to_order_meta( $order_id ) {
-        // Retrieve the UTM value from the WooCommerce session.
-        $utm = WC()->session->get( 'forfx_checkout_utm' );
-        
+        $utm = '';
+
+        // Try to get the UTM value from WooCommerce session if available.
+        if ( function_exists( 'WC' ) && WC()->session && WC()->session->get( 'forfx_checkout_utm' ) ) {
+            $utm = WC()->session->get( 'forfx_checkout_utm' );
+        } elseif ( isset( $_SESSION['forfx_checkout_utm'] ) ) {
+            // Fallback to PHP session.
+            $utm = sanitize_text_field( wp_unslash( $_SESSION['forfx_checkout_utm'] ) );
+        }
+
         if ( ! empty( $utm ) ) {
             // Save the UTM value as order meta using two meta keys.
             update_post_meta( $order_id, 'forfx_checkout_utm', $utm );
@@ -111,11 +127,22 @@ class YourPropFirm_Helper {
      * Display the captured UTM parameter on the checkout page after the billing details.
      */
     public function ypf_display_session_utm_on_checkout() {
-        // Retrieve the UTM value from the WooCommerce session.
-        $utm = WC()->session->get('forfx_checkout_utm');
-        echo '<div class="yourpropfirm-utm-display" style="margin-top:20px; padding:10px; border:1px solid #ccc;">';
-        echo '<p><strong>UTM Parameter:</strong> ' . esc_html( $utm ) . '</p>';
-        echo '</div>';
+        $utm = '';
+
+        // Try to retrieve the UTM value from WooCommerce session if available.
+        if ( function_exists( 'WC' ) && WC()->session && WC()->session->get( 'forfx_checkout_utm' ) ) {
+            $utm = WC()->session->get( 'forfx_checkout_utm' );
+        } elseif ( isset( $_SESSION['forfx_checkout_utm'] ) ) {
+            // Fallback to PHP session.
+            $utm = sanitize_text_field( wp_unslash( $_SESSION['forfx_checkout_utm'] ) );
+        }
+
+        // If the UTM value exists, display it.
+        if ( ! empty( $utm ) ) {
+            echo '<div class="yourpropfirm-utm-display" style="margin-top:20px; padding:10px; border:1px solid #ccc;">';
+            echo '<p><strong>UTM Parameter:</strong> ' . esc_html( $utm ) . '</p>';
+            echo '</div>';
+        }
     }  
 
     public function ypf_prevent_repurchase_by_category_at_checkout() {

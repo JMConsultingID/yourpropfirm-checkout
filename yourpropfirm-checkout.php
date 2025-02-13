@@ -101,38 +101,3 @@ class Yourpropfirm_Checkout {
 
 // Initialize the plugin.
 new Yourpropfirm_Checkout();
-
-// Tangkap parameter URL dan simpan ke session
-add_action('template_redirect', 'capture_utm_parameters');
-function capture_utm_parameters() {
-    $yourpropfirms_utm = $_GET['utm_source'];
-    WC()->session->set('yourpropfirm_set', '1234');
-    WC()->session->set('yourpropfirms_utm', $yourpropfirms_utm);
-    if (is_checkout() && !is_wc_endpoint_url()) {
-        if (isset($_GET['utm_source'])) {
-            WC()->session->set('yourpropfirm_utm', sanitize_text_field($_GET['utm_source']));
-        }
-    }
-}
-
-// Simpan parameter UTM ke meta order
-add_action('woocommerce_checkout_update_order_meta', 'save_utm_to_order_meta');
-function save_utm_to_order_meta($order_id) {
-    if ($utm_source = WC()->session->get('yourpropfirm_utm')) {
-        update_post_meta($order_id, '_yourpropfirm_utm', $utm_source);
-        update_post_meta($order_id, '_yourpropfirm_checkout_utm', $utm_source);
-        
-        // Clear the session data after saving
-        WC()->session->__unset('yourpropfirm_utm');
-    }
-}
-
-add_action('woocommerce_before_checkout_form', 'check_session_on_checkout');
-function check_session_on_checkout() {
-    if (function_exists('WC')) {
-        $session_data = WC()->session->get_session_data();
-        echo '<pre>Session Data on Checkout Page: ';
-        print_r($session_data);
-        echo '</pre>';
-    }
-}

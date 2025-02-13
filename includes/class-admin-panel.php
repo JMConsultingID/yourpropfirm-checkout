@@ -42,6 +42,7 @@ class YourPropFirm_Admin_Panel {
         register_setting('yourpropfirm_checkout_settings', 'yourpropfirm_checkout_enabled');
         register_setting('yourpropfirm_checkout_settings', 'yourpropfirm_checkout_type');
         register_setting('yourpropfirm_checkout_settings', 'yourpropfirm_restricted_category_ids');
+        register_setting('yourpropfirm_checkout_settings', 'yourpropfirm_homepage_redirect_domain');
     }
 
     /**
@@ -91,6 +92,14 @@ class YourPropFirm_Admin_Panel {
                     <td>
                         <input type="text" name="yourpropfirm_restricted_category_ids" id="yourpropfirm_restricted_category_ids" value="<?php echo esc_attr(get_option('yourpropfirm_restricted_category_ids', '')); ?>" class="regular-text">
                         <p class="description"><?php esc_html_e('Enter the category IDs that should restrict repeated purchases, separated by commas (e.g., 12,34,56).', 'yourpropfirm-checkout'); ?></p>
+                    </td>
+
+                    <th scope="row">
+                        <label for="yourpropfirm_homepage_redirect_domain"><?php esc_html_e('Homepage Redirect Domain', 'yourpropfirm-checkout'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" name="yourpropfirm_homepage_redirect_domain" id="yourpropfirm_homepage_redirect_domain" value="<?php echo esc_attr(get_option('yourpropfirm_homepage_redirect_domain', '')); ?>" class="regular-text">
+                        <p class="description"><?php esc_html_e('Enter the domain to which the homepage should redirect (e.g., example.com).', 'yourpropfirm-checkout'); ?></p>
                     </td>
                 </tr>
                 </table>

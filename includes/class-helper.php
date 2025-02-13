@@ -16,6 +16,8 @@ class YourPropFirm_Helper {
         add_action('wp_enqueue_scripts', [$this, 'ypf_enqueue_scripts']);
         add_action('init', [$this, 'remove_terms_and_conditions']);
         add_action('woocommerce_checkout_process', [$this, 'ypf_prevent_repurchase_by_category_at_checkout']);
+        add_action('template_redirect', [ $this, 'ypf_capture_utm_from_url' ] );
+        add_action('woocommerce_checkout_update_order_meta', [ $this, 'ypf_add_utm_to_order_meta' ] );
     }
 
     /**
@@ -74,7 +76,35 @@ class YourPropFirm_Helper {
         remove_action('woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30);
     }
 
-    
+    /**
+     * Capture the "utm" parameter from the URL when the user is on the checkout page
+     * and store it in the WooCommerce session.
+     */
+    public function ypf_capture_utm_from_url() {
+        // Check if the current page is checkout and the "utm" parameter exists in the URL.
+        if ( is_checkout() && isset( $_GET['utm'] ) ) {
+            // Sanitize the UTM parameter value.
+            $utm = sanitize_text_field( wp_unslash( $_GET['utm'] ) );
+            // Save the UTM value into the WooCommerce session.
+            WC()->session->set( 'forfx_checkout_utm', $utm );
+        }
+    }
+
+    /**
+     * Add the UTM parameter as meta data to the order when it is created.
+     *
+     * @param int $order_id The ID of the newly created order.
+     */
+    public function ypf_add_utm_to_order_meta( $order_id ) {
+        // Retrieve the UTM value from the WooCommerce session.
+        $utm = WC()->session->get( 'forfx_checkout_utm' );
+        
+        if ( ! empty( $utm ) ) {
+            // Save the UTM value as order meta using two meta keys.
+            update_post_meta( $order_id, 'forfx_checkout_utm', $utm );
+            update_post_meta( $order_id, '_forfx_checkout_utm', $utm );
+        }
+    }    
 
     public function ypf_prevent_repurchase_by_category_at_checkout() {
         // Get the customer's email from the checkout form

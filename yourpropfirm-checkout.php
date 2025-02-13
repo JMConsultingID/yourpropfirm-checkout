@@ -123,3 +123,15 @@ function save_utm_to_order_meta($order_id) {
         WC()->session->__unset('yourpropfirm_utm');
     }
 }
+
+add_action('wp_footer', 'check_specific_session_key');
+function check_specific_session_key() {
+    if (function_exists('WC')) {
+        $utm_source = WC()->session->get('yourpropfirm_utm');
+        if ($utm_source) {
+            echo '<pre>UTM Source: ' . esc_html($utm_source) . '</pre>';
+        } else {
+            echo '<pre>UTM Source is not set in the session.</pre>';
+        }
+    }
+}

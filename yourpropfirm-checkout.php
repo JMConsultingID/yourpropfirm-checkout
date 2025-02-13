@@ -106,6 +106,7 @@ new Yourpropfirm_Checkout();
 add_action('template_redirect', 'capture_utm_parameters');
 function capture_utm_parameters() {
     WC()->session->set('yourpropfirm_set', '1234');
+    WC()->session->set('yourpropfirms_utm', sanitize_text_field($_GET['utm_source']));
     if (is_checkout() && !is_wc_endpoint_url()) {
         if (isset($_GET['utm_source'])) {
             WC()->session->set('yourpropfirm_utm', sanitize_text_field($_GET['utm_source']));

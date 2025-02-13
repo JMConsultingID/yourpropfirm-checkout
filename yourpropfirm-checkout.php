@@ -111,8 +111,10 @@ function add_custom_query_vars($vars) {
 // Retrieve custom query parameter and save to session
 add_action('wp', 'get_custom_url_parameter');
 function get_custom_url_parameter() {
+    $utm_source = get_query_var('utm_source');
+    WC()->session->set('yourpropfirm_set', '1234');
+    WC()->session->set('yourpropfirms_utm', $utm_source);
     if (is_checkout()) {
-        $utm_source = get_query_var('utm_source');
         if (!empty($utm_source)) {
             WC()->session->set('yourpropfirm_utm', sanitize_text_field($utm_source));
         }
@@ -131,11 +133,12 @@ function save_utm_to_order_meta($order_id) {
     }
 }
 
-// Debugging: Output the query variable
-add_action('wp_footer', 'debug_custom_query_var');
-function debug_custom_query_var() {
-    if (is_checkout()) {
-        $utm_source = get_query_var('utm_source');
-        echo '<pre>UTM Source from Query Var: ' . esc_html($utm_source) . '</pre>';
+add_action('woocommerce_before_checkout_form', 'check_session_on_checkout');
+function check_session_on_checkout() {
+    if (function_exists('WC')) {
+        $session_data = WC()->session->get_session_data();
+        echo '<pre>Session Data on Checkout Page: ';
+        print_r($session_data);
+        echo '</pre>';
     }
 }

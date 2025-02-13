@@ -82,9 +82,9 @@ class YourPropFirm_Helper {
      */
     public function ypf_capture_utm_from_url() {
         // Check if the current page is checkout and the "utm" parameter exists in the URL.
-        if ( is_checkout() && isset( $_GET['utm'] ) ) {
+        if ( is_checkout() && isset( $_GET['utm_source'] ) ) {
             // Sanitize the UTM parameter value.
-            $utm = sanitize_text_field( wp_unslash( $_GET['utm'] ) );
+            $utm = sanitize_text_field( wp_unslash( $_GET['utm_source'] ) );
             // Save the UTM value into the WooCommerce session.
             WC()->session->set( 'forfx_checkout_utm', $utm );
         }

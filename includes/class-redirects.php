@@ -101,7 +101,11 @@ class Yourpropfirm_Checkout_Redirects {
 
     public function yourpropfirm_checkout_affiliate_redirect_by_page_id() {
         $checkout_type = get_option('yourpropfirm_checkout_type', 'default'); 
-        $redirect_referral_url = get_option('yourpropfirm_homepage_redirect_domain', 'https://forfx.com/');
+        $redirect_referral_url = get_option('yourpropfirm_homepage_redirect_domain', '');
+        if ( empty( $redirect_referral_url ) ) {
+            $redirect_referral_url = home_url();
+        }
+
         if (is_front_page() || is_home()) {
             ?>
             <script type="text/javascript">

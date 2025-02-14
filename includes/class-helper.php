@@ -13,15 +13,9 @@ if (!defined('ABSPATH')) {
 
 class YourPropFirm_Helper {
     public function __construct() {
-        if ( ! session_id() ) {
-            session_start();
-        }
         add_action('wp_enqueue_scripts', [$this, 'ypf_enqueue_scripts']);
         add_action('init', [$this, 'remove_terms_and_conditions']);
         add_action('woocommerce_checkout_process', [$this, 'ypf_prevent_repurchase_by_category_at_checkout']);
-        add_action('template_redirect', [ $this, 'ypf_capture_utm_from_url' ] );
-        add_action('woocommerce_checkout_update_order_meta', [ $this, 'ypf_add_utm_to_order_meta' ] );
-        add_action( 'woocommerce_after_checkout_billing_form', [ $this, 'ypf_display_session_utm_on_checkout' ] );
     }
 
     /**
@@ -80,77 +74,14 @@ class YourPropFirm_Helper {
         remove_action('woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30);
     }
 
-    /**
-     * Capture the "utm" parameter from the URL when the user is on the checkout page
-     * and store it in the WooCommerce session.
-     */
-    public function ypf_capture_utm_from_url() {
-        // Check if we are on the checkout page and the "utm" parameter exists.
-        if ( is_checkout() && isset( $_GET['utm_source'] ) ) {
-            // Sanitize the UTM parameter.
-            $utm = sanitize_text_field( wp_unslash( $_GET['utm_source'] ) );
-            
-            // If WooCommerce session is available, use it.
-            if ( function_exists( 'WC' ) && WC()->session ) {
-                WC()->session->set( 'forfx_checkout_utm', $utm );
-            } else {
-                // Fallback to PHP session.
-                $_SESSION['forfx_checkout_utm'] = $utm;
-            }
-        }
-    }
-
-    /**
-     * Add the UTM parameter as meta data to the order when it is created.
-     *
-     * @param int $order_id The ID of the newly created order.
-     */
-    public function ypf_add_utm_to_order_meta( $order_id ) {
-        $utm = '';
-
-        // Try to get the UTM value from WooCommerce session if available.
-        if ( function_exists( 'WC' ) && WC()->session && WC()->session->get( 'forfx_checkout_utm' ) ) {
-            $utm = WC()->session->get( 'forfx_checkout_utm' );
-        } elseif ( isset( $_SESSION['forfx_checkout_utm'] ) ) {
-            // Fallback to PHP session.
-            $utm = sanitize_text_field( wp_unslash( $_SESSION['forfx_checkout_utm'] ) );
-        }
-
-        if ( ! empty( $utm ) ) {
-            // Save the UTM value as order meta using two meta keys.
-            update_post_meta( $order_id, 'forfx_checkout_utm', $utm );
-            update_post_meta( $order_id, '_forfx_checkout_utm', $utm );
-        }
-    }
-
-    /**
-     * Display the captured UTM parameter on the checkout page after the billing details.
-     */
-    public function ypf_display_session_utm_on_checkout() {
-        $utm = '';
-
-        // Try to retrieve the UTM value from WooCommerce session if available.
-        if ( function_exists( 'WC' ) && WC()->session && WC()->session->get( 'forfx_checkout_utm' ) ) {
-            $utm = WC()->session->get( 'forfx_checkout_utm' );
-        } elseif ( isset( $_SESSION['forfx_checkout_utm'] ) ) {
-            // Fallback to PHP session.
-            $utm = sanitize_text_field( wp_unslash( $_SESSION['forfx_checkout_utm'] ) );
-        }
-
-        // If the UTM value exists, display it.
-        if ( ! empty( $utm ) ) {
-            echo '<div class="yourpropfirm-utm-display" style="margin-top:20px; padding:10px; border:1px solid #ccc;">';
-            echo '<p><strong>UTM Parameter:</strong> ' . esc_html( $utm ) . '</p>';
-            echo '</div>';
-        }
-    }  
+    
 
     public function ypf_prevent_repurchase_by_category_at_checkout() {
         // Get the customer's email from the checkout form
         $customer_email = isset($_POST['billing_email']) ? sanitize_email($_POST['billing_email']) : '';
 
         // If no email is provided, prevent checkout
-        if (empty($customer_email)) {
+        if ( empty( $customer_email ) ) {
             wc_add_notice(__('Please provide your email address to proceed with the checkout.', 'woocommerce'), 'error');
             return;
         }
@@ -158,63 +89,56 @@ class YourPropFirm_Helper {
         // Get all items in the cart
         $cart_items = WC()->cart->get_cart();
 
-        // Retrieve restricted category IDs from the admin settings
-        $restricted_category_ids = explode(',', get_option('yourpropfirm_restricted_category_ids', ''));
+        // Retrieve restricted category IDs from the admin settings (as an array)
+        $restricted_category_ids = get_option('yourpropfirm_connection_competition_categories', array());
 
         // If no restricted categories are defined, skip the validation
-        if (empty($restricted_category_ids)) {
+        if ( empty( $restricted_category_ids ) ) {
             return;
         }
 
         // Retrieve all orders made by the customer using their email
         $customer_orders = wc_get_orders([
             'billing_email' => $customer_email,
-            'status'        => ['completed', 'processing'], // Check only completed or processing orders
-            'limit'         => -1, // Retrieve all matching orders
+            'status'        => ['completed', 'processing'], // Only check orders with these statuses
+            'limit'         => -1,
         ]);
 
-        // Track purchased categories
-        $purchased_categories = [];
+        // Track purchased products (for those in the restricted categories)
+        $purchased_products = [];
 
-        // Check previous orders for restricted categories
-        foreach ($customer_orders as $order) {
-            foreach ($order->get_items() as $item) {
+        // Loop through past orders and record purchased products that belong to the restricted categories
+        foreach ( $customer_orders as $order ) {
+            foreach ( $order->get_items() as $item ) {
                 $product_id = $item->get_product_id();
-
                 // Get the product's categories
                 $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
 
-                // Check if the product belongs to a restricted category
-                foreach ($restricted_category_ids as $restricted_id) {
-                    if (in_array($restricted_id, $product_categories)) {
-                        $purchased_categories[] = $restricted_id; // Mark the category as purchased
-                    }
+                // If the product belongs to any of the restricted categories, record it
+                if ( array_intersect($restricted_category_ids, $product_categories) ) {
+                    $purchased_products[] = $product_id;
                 }
             }
         }
 
-        // Prevent checkout if cart contains products from purchased categories
-        foreach ($cart_items as $cart_item) {
+        // Check current cart items against previously purchased products
+        foreach ( $cart_items as $cart_item ) {
             $product_id = $cart_item['product_id'];
-
             // Get the product's categories
             $product_categories = wc_get_product_terms($product_id, 'product_cat', ['fields' => 'ids']);
 
-            // Check if the product belongs to a purchased category
-            foreach ($purchased_categories as $purchased_category) {
-                if (in_array($purchased_category, $product_categories)) {
+            // Only validate products within the restricted categories
+            if ( array_intersect($restricted_category_ids, $product_categories) ) {
+                if ( in_array($product_id, $purchased_products) ) {
+                    $product_title = get_the_title($product_id);
                     wc_add_notice(
-                        sprintf(
-                            __('You have already purchased a product from the category "%s". You cannot purchase any products from this category again.', 'woocommerce'),
-                            get_term($purchased_category)->name
-                        ),
+                        sprintf(__('You have already purchased "%s". You cannot purchase this product again.', 'woocommerce'), $product_title),
                         'error'
                     );
                     return;
                 }
             }
         }
-
     }
 
 }

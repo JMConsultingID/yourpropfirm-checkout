@@ -15,7 +15,7 @@ class YourPropFirm_Helper {
     public function __construct() {
         add_action('wp_enqueue_scripts', [$this, 'ypf_enqueue_scripts']);
         add_action('init', [$this, 'remove_terms_and_conditions']);
-        add_action('woocommerce_checkout_process', [$this, 'ypf_prevent_repurchase_by_category_at_checkout']);
+        //add_action('woocommerce_checkout_process', [$this, 'ypf_prevent_repurchase_by_category_at_checkout']);
     }
 
     /**

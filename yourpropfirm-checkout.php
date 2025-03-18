@@ -57,48 +57,47 @@ class Yourpropfirm_Checkout {
      * Include core functionality files.
      */
     private function includes() {
-        require_once YPF_CHECKOUT_DIR . 'includes/class-order-handler.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-admin-panel.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-helper.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-order-handler.php';        
         require_once YPF_CHECKOUT_DIR . 'includes/class-shortcodes.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-redirects.php';
         require_once YPF_CHECKOUT_DIR . 'includes/class-single-product-checkout.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-checkout-woocommerce.php';
+        require_once YPF_CHECKOUT_DIR . 'includes/class-checkout-validation.php';
     }
 
     /**
      * Initialize core functionality.
      */
     private function init() {
-        // Instantiate the classes.
-        new YourPropfirm_Single_Product_Checkout();
-        new Yourpropfirm_Checkout_Order_Handler();
-        new Yourpropfirm_Checkout_Shortcodes();
-        new Yourpropfirm_Checkout_Redirects();
+        // Always load the admin panel.
+        new YourPropFirm_Admin_Panel();
+
+        // Get plugin settings.
+        $checkout_enabled = get_option('yourpropfirm_checkout_enabled', 0); // Default to disabled.
+        $checkout_type = get_option('yourpropfirm_checkout_type', 'default'); // Default to 'default'.
+
+        // Run conditionally based on settings.
+        if ($checkout_enabled == 1) {
+            // Load single product checkout and redirects.
+            new YourPropfirm_Single_Product_Checkout();
+            new Yourpropfirm_Checkout_Redirects();
+            new YourPropFirm_Helper();
+
+            if ($checkout_type === 'default') {
+                new Yourpropfirm_Checkout_Woocommerce();
+                new YourPropfirm_Checkout_Validation();
+            } elseif ($checkout_type === 'custom') {
+                new Yourpropfirm_Checkout_Order_Handler();
+                new Yourpropfirm_Checkout_Shortcodes();
+                
+            } else{
+                 new Yourpropfirm_Checkout_Woocommerce();
+            }
+        }
     }
 }
 
 // Initialize the plugin.
 new Yourpropfirm_Checkout();
-
-
-add_filter('woocommerce_locate_template', function ($template, $template_name, $template_path) {
-    // Check if the requested template is form-pay.php
-    if ($template_name === 'checkout/form-pay.php') {
-        // Define the path to the plugin's custom template
-        $plugin_template = YPF_CHECKOUT_DIR . 'templates/woocommerce/checkout/form-pay.php';
-        
-        // Return the plugin template if it exists
-        if (file_exists($plugin_template)) {
-            return $plugin_template;
-        }
-    }
-
-    // Return the original template if no override
-    return $template;
-}, 10, 3);
-
-
-add_filter( 'woocommerce_checkout_show_terms', '__return_false' );
-
-add_action( 'init', function() {
-    remove_action( 'woocommerce_checkout_terms_and_conditions', 'wc_checkout_privacy_policy_text', 20 );
-    remove_action( 'woocommerce_checkout_terms_and_conditions', 'wc_terms_and_conditions_page_content', 30 );
-});

@@ -26,6 +26,9 @@ class YourPropfirm_Single_Product_Checkout {
         // Disable add to cart messages.
         add_filter('wc_add_to_cart_message_html', '__return_false');
 
+        // Remove previous product before adding a new one.
+        //add_filter('woocommerce_add_cart_item_data', [$this, 'remove_previous_product'], 10, 2);
+
         // Empty the cart before adding a new product.
         add_filter('woocommerce_add_cart_item_data', [$this, 'empty_cart_before_adding_product']);
 
@@ -33,7 +36,7 @@ class YourPropfirm_Single_Product_Checkout {
         add_filter('woocommerce_add_to_cart_redirect', [$this, 'redirect_to_checkout']);
 
         // Check for multiple products in the cart at checkout.
-        add_action('woocommerce_before_checkout_form', [$this, 'check_for_multiple_products']);
+        //add_action('woocommerce_before_checkout_form', [$this, 'check_for_multiple_products']);
 
         // Disable order notes field.
         add_filter('woocommerce_enable_order_notes_field', '__return_false');
@@ -55,6 +58,24 @@ class YourPropfirm_Single_Product_Checkout {
         WC()->cart->empty_cart(); // Clear the cart.
         return $cart_item_data;
     }
+
+    /**
+     * Remove the previous product before adding a new one.
+     */
+    public function remove_previous_product($cart_item_key, $product_id) {
+        // Loop through the cart and remove all other products
+        foreach (WC()->cart->get_cart() as $key => $cart_item) {
+            if ($cart_item['product_id'] != $product_id) {
+                WC()->cart->remove_cart_item($key);
+            } else {
+                // Ensure the quantity is set to 1
+                if ($cart_item['quantity'] > 1) {
+                    WC()->cart->set_quantity($key, 1);
+                }
+            }
+        }
+    }
+
 
     /**
      * Redirect to checkout after adding a product to the cart.

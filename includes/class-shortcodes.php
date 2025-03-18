@@ -21,50 +21,9 @@ class Yourpropfirm_Checkout_Shortcodes {
      * Constructor: Register the shortcode.
      */
     public function __construct() {
+        add_filter('woocommerce_checkout_show_terms', '__return_false');
         add_shortcode('ypf_custom_billing_form', [$this, 'render_billing_form']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
     }
-    /**
-     * Enqueue CSS and JS for the billing form.
-     */
-    public function enqueue_assets() {
-    	$form_data = WC()->session->get('ypf_checkout_form_data', array());
-
-	    // Enqueue custom plugin styles
-	    wp_enqueue_style('ypf-checkout-css', YPF_CHECKOUT_URL . 'assets/css/yourpropfirm-checkout.css', [], YPF_CHECKOUT_VERSION);
-	    // Enqueue Bootstrap 5 CSS
-	    wp_enqueue_style(
-	        'bootstrap-css',
-	        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css',
-	        [],
-	        '5.3.0-alpha1'
-	    );
-	    // Enqueue custom plugin scripts
-	    wp_enqueue_script('ypf-checkout-js', YPF_CHECKOUT_URL . 'assets/js/yourpropfirm-checkout.js', ['jquery'], YPF_CHECKOUT_VERSION, true);
-	    // Enqueue Bootstrap 5 JS (Optional, for interactive components like modals or dropdowns)
-	    wp_enqueue_script(
-	        'bootstrap-js',
-	        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js',
-	        ['jquery'],
-	        '5.3.0-alpha1',
-	        true
-	    );
-	    // Pass PHP data to JavaScript
-	    $wc_countries = new WC_Countries();
-	    wp_localize_script('ypf-checkout-js', 'ypf_data', [
-	        'home_url'          => 'https://forfx.com',
-        	'states' => $wc_countries->get_states(),
-	        'select_state_text' => __('Select State', 'yourpropfirm-checkout'),
-	        'enter_state_text'  => __('Enter State/Region', 'yourpropfirm-checkout'), // For text input placeholder
-	        'no_states_text'    => __('No states available', 'yourpropfirm-checkout'),
-	        'ajax_url' 			=> admin_url('admin-ajax.php'),
-            'checkout_nonce' 	=> wp_create_nonce('ypf_checkout_nonce'),
-            'order_page_url' 	=> get_permalink(get_page_by_path('order')),
-            'saved_state'       => isset($form_data['state']) ? $form_data['state'] : '',
-        	'saved_country'     => isset($form_data['country']) ? $form_data['country'] : ''
-	    ]);
-	}
-
     /**
      * Render the custom billing form.
      */
